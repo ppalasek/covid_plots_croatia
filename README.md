@@ -1,5 +1,7 @@
-This repository contains code used for generating the plots tracking the progress of COVID-19 cases in Croatia displayed on [ppalasek.github.io](https://ppalasek.github.io/).
+This repository contains the code used for generating plots tracking the progress of COVID-19 cases in Croatia displayed on [ppalasek.github.io](https://ppalasek.github.io/).
 
-An example plot is shown below.
+Example plots are shown below.
 
 ![](img/example_plot.png)
+
+![](img/map.png)

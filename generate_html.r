@@ -128,3 +128,34 @@ for(use_log_scale in c(FALSE, TRUE)) {
     saveWidget(s, file = "html/index.html", title = "COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama")
   }
 }
+
+# before running download data from https://www.diva-gis.org/gdata and save into data folder
+hr <- st_read(dsn = "data/HRV_adm", layer = "HRV_adm1")
+
+colnames(hr)[5] <- "Zupanija"
+
+percentage_change_reordered <- t(percentage_change[nrow(percentage_change), c(14, 1:13, 15:21)])
+
+colnames(percentage_change_reordered)[1] <- 'Tjedna razlika'
+print(percentage_change_reordered)
+
+hr <-cbind(hr, percentage_change_reordered)
+
+date <- percentage_change$Datum[nrow(percentage_change)]
+
+hr_map <- ggplot(hr, aes(text = paste("Županija:", Zupanija, "<br>", "Tjedna razlika:", round(Tjedna.razlika, digits= 2), "%"))) +
+  ggtitle(paste("COVID 19 u Hrvatskoj: Pregled tjedne promjene broja zaraženih po županijama (", date, ")")) +
+  geom_sf(aes_string(fill = 'Tjedna.razlika')) +
+  scale_fill_distiller(palette = "RdYlGn", limits = c(-50, 50), oob = scales::squish, name='Promjena u postocima') +
+  geom_sf_text(aes(label=paste(round(Tjedna.razlika, digits= 2), "%", sep="")), fontface="bold", size=5, color="black") +
+  theme(legend.position = "bottom") +
+  theme_void()
+
+
+ggsave("img/map.png", plot = hr_map)
+
+hr_map <- ggplotly(hr_map, tooltip = c("text"))
+
+saveWidget(hr_map, file = "html/index_map.html", title = "COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama")
+
+
