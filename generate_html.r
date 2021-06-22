@@ -40,9 +40,6 @@ avg7_df <- as.data.frame(rollapply(diff_df[, 1:ncol(diff_df) - 1], 7, mean, fill
 
 avg7_df_lag <- rbind(NA, head(avg7_df, -7))
 
-print(nrow(avg7_df))
-print(nrow(avg7_df_lag))
-
 percentage_change = (tail(avg7_df, n=nrow(avg7_df_lag)) / avg7_df_lag - 1) * 100
 
 
@@ -55,6 +52,8 @@ colnames(percentage_change) <- paste("tjedna_razlika", colnames(percentage_chang
 percentage_change$Datum <- cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
 
 plot_df <- merge(diff_df, percentage_change, by=c("Datum"))
+
+last_date <- strftime(percentage_change$Datum[nrow(percentage_change)], "%d.%m.%Y.")
 
 n <- 60
 
@@ -113,7 +112,7 @@ for(use_log_scale in c(FALSE, TRUE)) {
   s <- subplot(p, nrows = 5, margin=c(0.02,0.02,0.05,0.02), titleY = TRUE) %>%
     add_annotations(x = 0.65,
                     y = 0.07,
-                    text = paste('COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama\n\nBoje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan\ndana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), '\nIzvor podataka: koronavirus.hr\n\nAutor: Petar Palašek', sep=''),
+                    text = paste('COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (', last_date ,')\n\nBoje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan\ndana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), '\nIzvor podataka: koronavirus.hr\n\nAutor: Petar Palašek', sep=''),
                     font = f,
                     xref = "paper",
                     yref = "paper",
@@ -125,7 +124,7 @@ for(use_log_scale in c(FALSE, TRUE)) {
     saveWidget(s, file = "html/index_log.html", title = "COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama")
   }
   else {
-    saveWidget(s, file = "html/index.html", title = "COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama")
+    saveWidget(s, file = "html/index.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (", last_date, ")", sep=""))
   }
 }
 
@@ -137,25 +136,27 @@ colnames(hr)[5] <- "Zupanija"
 percentage_change_reordered <- t(percentage_change[nrow(percentage_change), c(14, 1:13, 15:21)])
 
 colnames(percentage_change_reordered)[1] <- 'Tjedna razlika'
-print(percentage_change_reordered)
 
 hr <-cbind(hr, percentage_change_reordered)
 
-date <- percentage_change$Datum[nrow(percentage_change)]
 
-hr_map <- ggplot(hr, aes(text = paste("Županija:", Zupanija, "<br>", "Tjedna razlika:", round(Tjedna.razlika, digits= 2), "%"))) +
-  ggtitle(paste("COVID 19 u Hrvatskoj: Pregled tjedne promjene broja zaraženih po županijama (", date, ")")) +
+
+hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna razlika: ", round(Tjedna.razlika, digits= 2), "%", sep=""))) +
+  ggtitle(paste("COVID 19 u Hrvatskoj: Pregled tjedne promjene broja zaraženih po županijama (", last_date, ")", sep="")) +
   geom_sf(aes_string(fill = 'Tjedna.razlika')) +
   scale_fill_distiller(palette = "RdYlGn", limits = c(-50, 50), oob = scales::squish, name='Promjena u postocima') +
   geom_sf_text(aes(label=paste(round(Tjedna.razlika, digits= 2), "%", sep="")), fontface="bold", size=5, color="black") +
   theme(legend.position = "bottom") +
-  theme_void()
+  theme_void() +
+  labs(caption = paste('Boje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan dana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, autor: Petar Palašek', sep='')) +
+  theme(plot.caption = element_text(hjust = 0))
 
+hr_map
 
 ggsave("img/map.png", plot = hr_map)
 
 hr_map <- ggplotly(hr_map, tooltip = c("text"))
 
-saveWidget(hr_map, file = "html/index_map.html", title = "COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama")
+saveWidget(hr_map, file = "html/index_map.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (", last_date, ")", sep=""))
 
 
