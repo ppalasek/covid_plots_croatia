@@ -42,9 +42,17 @@ avg7_df_lag <- rbind(NA, head(avg7_df, -7))
 
 percentage_change = (tail(avg7_df, n=nrow(avg7_df_lag)) / avg7_df_lag - 1) * 100
 
+sum_14_df = (tail(avg7_df, n=nrow(avg7_df_lag)) + avg7_df_lag) * 7
+sum_7_df = tail(avg7_df, n=nrow(avg7_df_lag)) * 7
+
+colnames(sum_14_df) <- paste("ukupno_14d", colnames(percentage_change), sep = "_")
+colnames(sum_7_df) <- paste("ukupno_7d", colnames(percentage_change), sep = "_")
 
 avg7_df$Datum <- cumulative_cases$Datum[-c(nrow(cumulative_cases))]
 avg7_df_lag$Datum <- cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
+
+sum_14_df$Datum <- cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
+sum_7_df$Datum <-  cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
 
 
 colnames(percentage_change) <- paste("tjedna_razlika", colnames(percentage_change), sep = "_")
@@ -134,14 +142,34 @@ hr <- st_read(dsn = "data/HRV_adm", layer = "HRV_adm1")
 colnames(hr)[5] <- "Zupanija"
 
 percentage_change_reordered <- t(percentage_change[nrow(percentage_change), c(14, 1:13, 15:21)])
-
 colnames(percentage_change_reordered)[1] <- 'Tjedna razlika'
 
-hr <-cbind(hr, percentage_change_reordered)
+
+sum_7_reordered <- t(sum_7_df[nrow(sum_7_df), c(14, 1:13, 15:21)])
+
+# broj stanovnika po zupanijama preuzet s https://www.dzs.hr/
+population = c()
+population = c(106258, 137487, 121816, 807254, 209573, 115484, 106367, 124517, 44625, 109232, 272673, 66256, 282730, 99210, 145904, 447747, 166112, 73641, 150985, 168213, 309169)
+population_reordered = population[c(14, 1:13, 15:21)]
 
 
+sum_7_reordered <- round((sum_7_reordered / population_reordered) * 100000)
 
-hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna razlika: ", round(Tjedna.razlika, digits= 2), "%", sep=""))) +
+colnames(sum_7_reordered)[1] <- 'Ukupno_7d'
+
+sum_14_reordered <- t(sum_14_df[nrow(sum_14_df), c(14, 1:13, 15:21)])
+
+sum_14_reordered <- round((sum_14_reordered / population_reordered) * 100000)
+
+colnames(sum_14_reordered)[1] <- 'Ukupno_14d'
+
+sum_14_reordered
+
+hr <-cbind(hr, percentage_change_reordered, sum_7_reordered, sum_14_reordered)
+
+hr
+
+hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna razlika: ", round(Tjedna.razlika, digits= 2), "%", "<br>", "Ukupno u zadnjih 7 dana na 100k: ", Ukupno_7d, "<br>", "Ukupno u zadnjih 14 dana na 100k: ", Ukupno_14d,  sep=""))) +
   ggtitle(paste("COVID 19 u Hrvatskoj: Pregled tjedne promjene broja zaraženih po županijama (", last_date, ")", sep="")) +
   geom_sf(aes_string(fill = 'Tjedna.razlika')) +
   scale_fill_distiller(palette = "RdYlGn", limits = c(-50, 50), oob = scales::squish, name='Promjena u postocima') +
@@ -155,8 +183,35 @@ hr_map
 
 ggsave("img/map.png", plot = hr_map)
 
+
+hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 7 dana na 100k stanovnika: ", Ukupno_7d, sep=""))) +
+  ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 7 dana na 100000 stanovnika (", last_date, ")", sep="")) +
+  geom_sf(aes_string(fill = 'Ukupno_7d')) +
+  scale_fill_distiller(palette = "RdYlGn", limits = c(0,  50), oob = scales::squish, name='Broj slučajeva') +
+  geom_sf_text(aes(label=Ukupno_7d), fontface="bold", size=5, color="black") +
+  theme(legend.position = "bottom") +
+  theme_void() +
+  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 7 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, autor: Petar Palašek', sep='')) +
+  theme(plot.caption = element_text(hjust = 0))
+
+hr_map7
+
+ggsave("img/map_7_day_per_100k.png", plot = hr_map7)
+
+hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 14 dana na 100k stanovnika: ", Ukupno_14d, sep=""))) +
+  ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika (", last_date, ")", sep="")) +
+  geom_sf(aes_string(fill = 'Ukupno_14d')) +
+  scale_fill_distiller(palette = "RdYlGn", limits = c(0,  100), oob = scales::squish, name='Broj slučajeva') +
+  geom_sf_text(aes(label=Ukupno_14d), fontface="bold", size=5, color="black") +
+  theme(legend.position = "bottom") +
+  theme_void() +
+  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 14 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, autor: Petar Palašek', sep='')) +
+  theme(plot.caption = element_text(hjust = 0))
+
+hr_map14
+
+ggsave("img/map_14_day_per_100k.png", plot = hr_map14)
+
 hr_map <- ggplotly(hr_map, tooltip = c("text"))
 
 saveWidget(hr_map, file = "html/index_map.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (", last_date, ")", sep=""))
-
-

@@ -5,3 +5,7 @@ Example plots are shown below.
 ![](img/example_plot.png)
 
 ![](img/map.png)
+
+![](img/map_7_day_per_100k.png)
+
+![](img/map_14_day_per_100k.png)
