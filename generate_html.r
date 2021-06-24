@@ -8,6 +8,8 @@ library(gridExtra)
 library(plotly)
 library(htmlwidgets)
 
+library(sf)
+
 json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
 
 missing_data <-fromJSON('data/missing_data.json')
