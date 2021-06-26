@@ -64,6 +64,7 @@ percentage_change$Datum <- cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1
 plot_df <- merge(diff_df, percentage_change, by=c("Datum"))
 
 last_date <- strftime(percentage_change$Datum[nrow(percentage_change)], "%d.%m.%Y.")
+last_date_ <- strftime(percentage_change$Datum[nrow(percentage_change)], "%Y_%m_%d")
 
 n <- 60
 
@@ -183,7 +184,7 @@ hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna r
 
 hr_map
 
-ggsave("img/map.png", plot = hr_map)
+ggsave(paste('img/', last_date_, '_map.png', sep = ''), plot = hr_map)
 
 
 hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 7 dana na 100k stanovnika: ", Ukupno_7d, sep=""))) +
@@ -198,7 +199,7 @@ hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno 
 
 hr_map7
 
-ggsave("img/map_7_day_per_100k.png", plot = hr_map7)
+ggsave(paste('img/', last_date_, '_map_7_day_per_100k.png', sep = ''), plot = hr_map7)
 
 hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 14 dana na 100k stanovnika: ", Ukupno_14d, sep=""))) +
   ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika (", last_date, ")", sep="")) +
@@ -212,8 +213,25 @@ hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno
 
 hr_map14
 
-ggsave("img/map_14_day_per_100k.png", plot = hr_map14)
+ggsave(paste('img/', last_date_, '_map_14_day_per_100k.png', sep = ''), plot = hr_map14)
 
 hr_map <- ggplotly(hr_map, tooltip = c("text"))
 
 saveWidget(hr_map, file = "html/index_map.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (", last_date, ")", sep=""))
+
+
+generated_time <- format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h')
+
+md_source <- paste('### COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama\n\n',
+                   '##### (generirano ',  generated_time, ')\n\n',
+                   '- [Standardni prikaz](html/index.html)\n',
+                   '- [Prikaz na logaritamskoj skali](html/index_log.html)\n',
+                   '- [Prikaz na karti](html/index_map.html)\n\n',
+                   '-----\n\n',
+                   '![](img/', last_date_, '_map.png)\n\n',
+                   '![](img/', last_date_, '_map_7_day_per_100k.png)\n\n',
+                   '![](img/', last_date_, '_map_14_day_per_100k.png)\n\n',
+                   '-----\n\n',
+                   '- [Kod](https://github.com/ppalasek/covid_plots_croatia)\n', sep='')
+
+writeLines(md_source, 'index.md')
