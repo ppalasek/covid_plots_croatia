@@ -4,8 +4,8 @@ Example plots are shown below.
 
 ![](img/example_plot.png)
 
-![](img/map.png)
+![](img/2021_06_27_map.png)
 
-![](img/map_7_day_per_100k.png)
+![](img/2021_06_27_map_7_day_per_100k.png)
 
-![](img/map_14_day_per_100k.png)
+![](img/2021_06_27_map_14_day_per_100k.png)
