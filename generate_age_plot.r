@@ -42,6 +42,8 @@ max_date = max(json_data$Datum)
 json_data <- json_data[order(json_data$Datum),]
 
 last_date <- strftime(json_data$Datum[nrow(json_data)], "%d.%m.%Y.")
+last_date_ <- strftime(json_data$Datum[nrow(json_data)], "%Y_%m_%d")
+
 
 json_data$dob <- as.Date(paste0(json_data$dob, '-01-01'), format="%Y-%m-%d")
 
@@ -161,5 +163,8 @@ s <- subplot(p, nrows = 5, margin=c(0.02,0.02,0.02,0.02), titleY = TRUE) %>%
                   ay = 0)
 
 s
+
+orca(s, file = paste('img/', last_date_, '_per_age_group.png', sep = ''), width = 27 * 72, height = 13 * 72)
+
 
 saveWidget(s, file = "html/index_per_age.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po dobnim skupinama (", last_date, ")", sep=""))
