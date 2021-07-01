@@ -189,7 +189,7 @@ hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna r
 
 hr_map
 
-ggsave(paste('img/', last_date_, '_map.png', sep = ''), plot = hr_map)
+ggsave(paste('img/', last_date_, '_map.png', sep = ''), plot = hr_map, dpi=300, width=309.80, height=215.90, units="mm")
 
 
 hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 7 dana na 100k stanovnika: ", round(Ukupno_7d_norm, digits= 2), sep=""))) +
@@ -204,7 +204,7 @@ hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno 
 
 hr_map7
 
-ggsave(paste('img/', last_date_, '_map_7_day_per_100k.png', sep = ''), plot = hr_map7)
+ggsave(paste('img/', last_date_, '_map_7_day_per_100k.png', sep = ''), plot = hr_map7, dpi=300, width=309.80, height=215.90, units="mm")
 
 hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 14 dana na 100k stanovnika: ", round(Ukupno_14d_norm, digits= 2), sep=""))) +
   ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika (", last_date, ")", sep="")) +
@@ -218,7 +218,7 @@ hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno
 
 hr_map14
 
-ggsave(paste('img/', last_date_, '_map_14_day_per_100k.png', sep = ''), plot = hr_map14)
+ggsave(paste('img/', last_date_, '_map_14_day_per_100k.png', sep = ''), plot = hr_map14, dpi=300, width=309.80, height=215.90, units="mm")
 
 hr_map <- ggplotly(hr_map, tooltip = c("text"))
 
@@ -237,7 +237,7 @@ md_source <- paste('### COVID 19 u Hrvatskoj: Pregled broja zaraženih po župan
                    '![](img/', last_date_, '_map.png)\n\n',
                    '![](img/', last_date_, '_map_7_day_per_100k.png)\n\n',
                    '![](img/', last_date_, '_map_14_day_per_100k.png)\n\n',
-                   '![](img/per_age_group.png)\n\n',
+                   '![](img/', last_date_, '_per_age_group.png)\n\n',
                    '-----\n\n',
                    '- [Kod](https://github.com/ppalasek/covid_plots_croatia)\n', sep='')
 
