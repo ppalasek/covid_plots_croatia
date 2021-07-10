@@ -148,13 +148,16 @@ percentage_change_reordered <- t(percentage_change[nrow(percentage_change), c(14
 colnames(percentage_change_reordered)[1] <- 'Tjedna razlika'
 
 
-
+population_by_age <- read.csv(file = 'data/cro_population_by_age.csv')
+population_per_county <- population_by_age[nrow(population_by_age), ]
 
 # broj stanovnika po zupanijama preuzet s https://www.dzs.hr/
-population = c()
-population = c(106258, 137487, 121816, 807254, 209573, 115484, 106367, 124517, 44625, 109232, 272673, 66256, 282730, 99210, 145904, 447747, 166112, 73641, 150985, 168213, 309169)
-population_reordered = population[c(14, 1:13, 15:21)]
+# previously used population data:
+#population = c(106258, 137487, 121816, 807254, 209573, 115484, 106367, 124517, 44625, 109232, 272673, 66256, 282730, 99210, 145904, 447747, 166112, 73641, 150985, 168213, 309169)
+# replaced with the follwoing which was being used in other plots:
+#                105554, 136429, 122449, 809235, 209955, 114804, 105886, 124407, 44346, 109130, 270877, 65614, 281945, 98899, 144599, 448153, 165885, 72843, 149489, 168055, 309611
 
+population_reordered <- as.numeric(population_per_county[1, c(15, 2:14, 16:22)])
 
 sum_7_reordered <- t(sum_7_df[nrow(sum_7_df), c(14, 1:13, 15:21)])
 sum_7_reordered_norm <- (sum_7_reordered / population_reordered) * 100000
@@ -227,17 +230,20 @@ saveWidget(hr_map, file = "html/index_map.html", title = paste("COVID 19 u Hrvat
 
 generated_time <- format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h')
 
-md_source <- paste('### COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama\n\n',
-                   '##### (generirano ',  generated_time, ')\n\n',
-                   '- [Standardni prikaz](html/index.html)\n',
-                   '- [Prikaz na logaritamskoj skali](html/index_log.html)\n',
-                   '- [Prikaz na karti](html/index_map.html)\n',
-                   '- [Prikaz po dobnim skupinama](html/index_per_age.html)\n\n',
+md_source <- paste('# COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama\n\n',
+                   '### (generirano ',  generated_time, ')\n\n',
+                   'Interaktivni prikazi dostupni su na sljedećim linkovima:\n\n',
+                   '- [Standardni prikaz](html/index.html) (zadnjih 60 dana)\n',
+                   '- [Prikaz na logaritamskoj skali](html/index_log.html) (zadnjih 60 dana)\n',
+                   '- [Prikaz na karti](html/index_map.html) (tjedna promjena, zadnjih 7 i 14 dana na 100000 stanovnika)\n',
+                   '- [Prikaz po dobnim skupinama](html/index_per_age.html) (zadnjih 60 dostupnih dana)\n',
+                   '- [Prikaz po dobnim skupinama i spolu](html/index_pyramid.html) (zadnjih 7 dostupnih dana, na 100000 stanovnika)\n\n',
                    '-----\n\n',
                    '![](img/', last_date_, '_map.png)\n\n',
                    '![](img/', last_date_, '_map_7_day_per_100k.png)\n\n',
                    '![](img/', last_date_, '_map_14_day_per_100k.png)\n\n',
                    '![](img/', last_date_, '_per_age_group.png)\n\n',
+                   '![](img/', last_date_, '_pyramid.png)\n\n',
                    '-----\n\n',
                    '- [Kod](https://github.com/ppalasek/covid_plots_croatia)\n', sep='')
 
