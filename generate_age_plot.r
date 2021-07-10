@@ -20,7 +20,15 @@ library(lubridate)
 
 library(reshape2)
 
+# get last date from other source just to store under same file name format
+json_data_ <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
+json_data_$Datum <- as.Date(json_data_$Datum, format="%Y-%m-%d")
+json_data_ <- json_data_[order(json_data_$Datum),]
+last_date_ <- strftime(json_data_$Datum[nrow(json_data_) - 1], "%Y_%m_%d")
 
+
+
+# get age data
 json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_osobama')
 
 
@@ -42,12 +50,17 @@ max_date = max(json_data$Datum)
 json_data <- json_data[order(json_data$Datum),]
 
 last_date <- strftime(json_data$Datum[nrow(json_data)], "%d.%m.%Y.")
-last_date_ <- strftime(json_data$Datum[nrow(json_data)], "%Y_%m_%d")
+# last_date_ <- strftime(json_data$Datum[nrow(json_data)], "%Y_%m_%d")
 
 
 json_data$dob <- as.Date(paste0(json_data$dob, '-01-01'), format="%Y-%m-%d")
 
 json_data$age <- round(time_length(difftime(json_data$Datum, json_data$dob), "years"))
+
+
+
+
+
 
 json_data$age_group <- findInterval(json_data$age, seq(0, 85, by=step))
 
