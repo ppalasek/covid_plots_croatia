@@ -10,4 +10,6 @@ Example plots are shown below.
 
 ![](img/2021_07_09_map_14_day_per_100k.png)
 
+![](img/2021_07_09_per_age_group.png)
+
 ![](img/2021_07_09_pyramid.png)
