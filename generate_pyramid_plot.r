@@ -135,7 +135,8 @@ for(county in c(sort(counties$Zupanija), 'Hrvatska')) {
   
   max_inc <- max(c(max(abs(m_melt$Incidencija_7d_na_100k)), max(f_melt$Incidencija_7d_na_100k)))
   
-  max_inc <- max(c(300, max_inc))
+  max_inc <- max(c(300, (max_inc %/% 50 + 1) * 50))
+  
   data <- rbind(m_melt, f_melt)
   
   data$pos <- ifelse(data$Broj_slučajeva < 0, 0, -20)

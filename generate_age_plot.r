@@ -20,6 +20,8 @@ library(lubridate)
 
 library(reshape2)
 
+Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
+
 # get last date from other source just to store under same file name format
 json_data_ <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
 json_data_$Datum <- as.Date(json_data_$Datum, format="%Y-%m-%d")
@@ -33,7 +35,7 @@ json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_osobama')
 
 
 step <- 5
-n <- 60
+n <- 180
 
 
 population_by_age <- read.csv(file = 'data/cro_population_by_age.csv')
@@ -134,10 +136,14 @@ for(county in c(sort(counties$Zupanija), 'Hrvatska')) {
   
   colnames(d)[2:3] <- c('Dobna_skupina', 'Broj_zadnjih_7_data')
   
+  my_breaks <-c(0, 10, 50, 100, 200, 400, 800)
+  my_labels <-c('0', '10', '50', '100', '200', '400', '800+')
+  
   p[[i]] <- ggplot(d, aes_string('Datum', colnames(d)[2], fill='Broj_zadnjih_7_data')) + 
     geom_tile() +
     ylab("Dobna skupina") +
-    scale_fill_distiller(palette = "RdYlGn", oob = scales::squish, name='Ukupno\nu 7 dana\nna 100000\nstanovnika',  limits = c(0, 700)) +
+    scale_fill_distiller(palette="Spectral", oob = scales::squish, name='Ukupno\nu 7 dana\nna 100000\nstanovnika',
+                        limits = c(0, 800), labels=my_labels, breaks=my_breaks) +
     theme_minimal()
 
   p[[i]] <- ggplotly(p[[i]])
