@@ -145,29 +145,6 @@ for region in all_vals[0].keys():
 
     print(r2)
 
-    # if r2 > r2_threshold: 
-    #     yy = {}
-    #     yy_date = {}
-
-    # # get t when n(t) is 75
-    #     yy[75] = np.log(75 / p_opt[0]) / p_opt[1]
-    #     yy[200] = np.log(200 / p_opt[0]) / p_opt[1]
-
-    #     print(75, yy[75])
-    #     print(200, yy[200])
-
-    # # get date when n(t) = 75
-    #     yy_date[75] = (all_vals[-n_for_fitting]['date'] + datetime.timedelta(round(yy[75]))).strftime("%d.%m.")
-    #     yy_date[200] = (all_vals[-n_for_fitting]['date'] + datetime.timedelta(round(yy[200]))).strftime("%d.%m.")
-
-        
-
-    #     last_index_75 = max(int(yy[75] + 0.5) + max(x) - n_for_fitting + 1, max(x) + n_fut) + 1
-    #     last_index_200 = max(int(yy[200] + 0.5) + max(x) - n_for_fitting + 1, max(x) + n_fut) + 1
-
-    #     last_index = max(last_index_75, last_index_200)
-
-    # else:
     last_index = max(x) + n_fut + 1
 
     axs[0].set_yscale('symlog', basey=2)
@@ -192,26 +169,6 @@ for region in all_vals[0].keys():
         p = axs[1].plot(range(max(x), max(x) + n_fut), curve_model(xfut, *p_opt), ':', label='n(t)={:.3f}*e^({:.3f}t),\nu budućnosti (pod pretpostavkom istog trenda)'.format(p_opt[0], p_opt[1]), linewidth=5)
         
 
-        # for i in range(2):
-        #     for thr in [75, 200]:  
-        #         if yy[thr] > n_for_fitting + n_fut:
-                    
-        #             # axs[i].plot(range(max(x) + n_fut - 1, max(x) - n_for_fitting + int(yy[thr] + 0.5) + 2),
-        #             #          curve_model(range(n_for_fitting + n_fut - 1 - 1, int(yy[thr] + 0.5) + 1), *p_opt),
-        #             #         ':', linewidth=2, color=p[0].get_color())
-
-        #             axs[i].plot(range(max(x) + n_fut - 1, max(x) - n_for_fitting + int(yy[thr] + 0.5) + 2),
-        #                      curve_model(range(n_for_fitting + n_fut - 1 - 1, int(yy[thr] + 0.5) + 1), *p_opt),
-        #                     ':', linewidth=2, color=p[0].get_color())
-
-        #             # axs[i].plot(range(max(x) + n_fut - 1,
-        #             #                   max(x) - n_for_fitting + int(yy + 0.5) + 1 + 1),
-        #             #          curve_model(range(n_for_fitting + n_fut - 2,
-        #             #                            n_for_fitting - n_fut + int(yy + 0.5) + 1), *p_opt),
-        #             #         ':', linewidth=2, color=p[0].get_color())
-
-        #         if yy[thr] > n_for_fitting and yy[thr] <= n_for_fitting + n_fut:
-        #             axs[i].axvline(yy[thr] + max(x) - n_for_fitting + 1, label="t kad je n(t)={}: {:.2f} (~{})".format(thr, yy[thr], yy_date[thr]), linestyle='--', linewidth=3)
 
         print('doubling_time: ', round(doubling_time, 2), '(±', round(doubling_time_error, 2),')')
         print('R^2', r2)
