@@ -95,9 +95,6 @@ last_date_cases = all_vals['cases'][-1]['date']
 
 hosp_data = read_csv('data/latest/last_hzjz_data.csv')
 
-# hosp_data = read_csv('data/svi-podaci_15042020-14112021.csv')
-hosp_data = read_csv('data/podaci-za-sve-dane_15042020-28112021.csv')
-
 
 
 n_days = 14
