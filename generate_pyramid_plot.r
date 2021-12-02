@@ -1,6 +1,7 @@
 library(jsonlite)
 library(ggplot2)
 library(zoo) 
+library(readr)
 
 library(colorspace)
 library(gridExtra)
@@ -20,16 +21,11 @@ library(lubridate)
 
 library(reshape2)
 
-# get last date from other source just to store under same file name format
-json_data_ <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
-json_data_$Datum <- as.Date(json_data_$Datum, format="%Y-%m-%d")
-json_data_ <- json_data_[order(json_data_$Datum),]
-last_date_ <- strftime(json_data_$Datum[nrow(json_data_) - 1], "%Y_%m_%d")
+# get last_date_
+load('data/latest/last_date_.Rda')
 
-
-
-json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_osobama')
-
+# get age data
+json_data <- fromJSON('data/latest/last_data_po_osobama.json')
 
 step <- 5
 n <- 60
@@ -38,10 +34,6 @@ n <- 60
 json_data <- json_data %>%  mutate(dob = ifelse(dob < 1901, NA, dob))
 
 json_data$Datum <- as.Date(json_data$Datum, format="%Y-%m-%d")
-
-min_date = min(json_data$Datum)
-max_date = max(json_data$Datum)
-
 
 json_data <- json_data[order(json_data$Datum),]
 
@@ -75,7 +67,7 @@ age_reshaped3 <- age_reshaped2[c('Datum', 'Zupanija', 'spol', as.character(1:len
 
 colnames(age_reshaped3)[4:(3+length(labels))] <- labels
 
-max_date = max(age_reshaped3$Datum)
+max_date = max(age_reshaped3$Datum) - days(2)
 two_weeks_ago  = max_date - days(6)
 
 
@@ -150,7 +142,7 @@ for(county in c(sort(counties$Zupanija), 'Hrvatska')) {
     labs(x = 'Dobna skupina') +
     theme_minimal() +
     theme(legend.position = "none") +
-    scale_y_continuous(breaks = seq(-max_inc, max_inc, 100),labels = abs(seq(-max_inc, max_inc, 100)))
+    scale_y_continuous(labels = abs)
     
   
   g1

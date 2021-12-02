@@ -1,299 +1,66 @@
 library(jsonlite)
-library(ggplot2)
-library(zoo) 
+library(readr)
 
 library(colorspace)
 library(gridExtra)
 
-library(plotly)
-library(htmlwidgets)
+# read last_date
+load('data/latest/last_date_.Rda')
 
-library(sf)
-
-json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
-
-missing_data <-fromJSON('data/missing_data.json')
-
-json_data$Datum <- as.Date(json_data$Datum, format="%Y-%m-%d")
-missing_data$Datum <- as.Date(missing_data$Datum, format="%Y-%m-%d")
-
-json_data <- rbind(json_data, missing_data)
-
-data_sorted <- json_data[order(json_data$Datum),]
-
-counties <- data_sorted[1, ]$PodaciDetaljno[[1]]$Zupanija
-
-col_classes = c("Date", rep("integer", length(counties)))
-col_names = c('Datum', counties)
-
-cumulative_cases <- read.table(text="", colClasses=col_classes, col.names=col_names)
-
-for(d in 1:nrow(data_sorted)) {
-  cumulative_cases[nrow(cumulative_cases) + 1,] = data.frame(data_sorted[d, ]$Datum, t(data_sorted[d, ]$PodaciDetaljno[[1]]$broj_zarazenih))
-}
-
-cumulative_cases$Hrvatska <- rowSums(cumulative_cases[,-c(1)])
-
-diff_df <- cumulative_cases[-1, -c(1)] - cumulative_cases[-nrow(cumulative_cases), -c(1)]
-
-diff_df$Datum <- cumulative_cases$Datum[-c(nrow(cumulative_cases))]
-
-avg7_df <- as.data.frame(rollapply(diff_df[, 1:ncol(diff_df) - 1], 7, mean, fill=NA, align="right"))
-
-avg7_df_lag <- rbind(NA, head(avg7_df, -7))
-
-percentage_change = (tail(avg7_df, n=nrow(avg7_df_lag)) / avg7_df_lag - 1) * 100
-
-sum_14_df = (tail(avg7_df, n=nrow(avg7_df_lag)) + avg7_df_lag) * 7
-sum_7_df = tail(avg7_df, n=nrow(avg7_df_lag)) * 7
-
-colnames(sum_14_df) <- paste("ukupno_14d", colnames(percentage_change), sep = "_")
-colnames(sum_7_df) <- paste("ukupno_7d", colnames(percentage_change), sep = "_")
-
-avg7_df$Datum <- cumulative_cases$Datum[-c(nrow(cumulative_cases))]
-avg7_df_lag$Datum <- cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
-
-sum_14_df$Datum <- cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
-sum_7_df$Datum <-  cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
-
-
-colnames(percentage_change) <- paste("tjedna_razlika", colnames(percentage_change), sep = "_")
-
-percentage_change$Datum <- cumulative_cases$Datum[c(8:nrow(cumulative_cases) - 1)]
-
-plot_df <- merge(diff_df, percentage_change, by=c("Datum"))
-
-last_date <- strftime(percentage_change$Datum[nrow(percentage_change)], "%d.%m.%Y.")
-last_date_ <- strftime(percentage_change$Datum[nrow(percentage_change)], "%Y_%m_%d")
-
-n <- 60
-
-data_to_plot <- tail(plot_df, n=n)
-
-f <- list(
-  size = 13,
-  color = "black")
-
-for(use_log_scale in c(FALSE, TRUE)) {
-  p <- list()
-  a <- list()
-  
-  for(i in 1:22) {
-    title <- colnames(data_to_plot)[1 + i]
-  
-    if (i == 21) {
-      title <- gsub("[.]", "", title)
-    }
-    else  
-    {
-      title <- gsub("[.]", "-", title)
-    }
-  
-    p[[i]] <- ggplot(data=data_to_plot, aes_string(x='Datum', y=colnames(data_to_plot)[1 + i])) +
-      ylab("Broj slučajeva") +
-      geom_bar(stat="identity") +
-      geom_col(aes_string(fill=colnames(data_to_plot)[1 + i + 22])) +
-      scale_fill_distiller(palette = "RdYlGn", limits = c(-50, 50), oob = scales::oob_squish_any, name='') +
-      geom_line(data=tail(avg7_df, n=n), aes_string(x='Datum', y=colnames(data_to_plot)[1 + i]), size=1, colour='blue') +  #
-      theme_minimal()
-    
-    if (use_log_scale) {
-      p[[i]] <- p[[i]] + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
-    }
-    
-    p[[i]] <- ggplotly(p[[i]])
-    
-    a[[i]] <- list(
-      text = paste('\n',title, ' (', diff_df[nrow(diff_df), i], ')\nTjedna razlika: ', format(round(data_to_plot[nrow(data_to_plot), 1 + i + 22], 2), nsmall = 2), '%', sep=''),
-      font = f,
-      xref = "paper",
-      yref = "paper",
-      yanchor = "bottom",
-      xanchor = "center",
-      align = "center",
-      x = 0.5,
-      y = 0.92,
-      showarrow = FALSE
-    )
-    
-    p[[i]] <- p[[i]] %>%
-      layout(annotations = a[i])
-  }
-  
-  s <- subplot(p, nrows = 5, margin=c(0.02,0.02,0.05,0.02), titleY = TRUE) %>%
-    add_annotations(x = 0.65,
-                    y = 0.07,
-                    text = paste('COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (', last_date ,')\n\nBoje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan\ndana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), '\nIzvor podataka: koronavirus.hr\n\nAutor: Petar Palašek', sep=''),
-                    font = f,
-                    xref = "paper",
-                    yref = "paper",
-                    align='left',
-                    ax = 0,
-                    ay = 0)
-  
-  if (use_log_scale) {
-    saveWidget(s, file = "html/index_log.html", title = "COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama")
-  }
-  else {
-    saveWidget(s, file = "html/index.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (", last_date, ")", sep=""))
-  }
-}
-
-# before running download data from https://www.diva-gis.org/gdata and save into data folder
-hr <- st_read(dsn = "data/HRV_adm", layer = "HRV_adm1")
-
-region <- rep(NA, nrow(hr))
-
-region[c(1, 18, 12, 2, 11, 19, 6, 15)] <- 'Panonska Hrvatska'
-region[c(13, 9, 20, 14, 16, 5, 3)] <- 'Jadranska Hrvatska'
-region[c(4)] <- 'Grad Zagreb'
-region[c(10, 17, 7, 8, 21)] <- 'Sjeverna Hrvatska'
-
-colnames(hr)[5] <- "Zupanija"
-
-region <- region[c(14, 1:13, 15:21)]
-
-hr <- cbind(hr, region)
-colnames(hr)[10] <- "Regija"
-
-
-
-percentage_change_reordered <- t(percentage_change[nrow(percentage_change), c(14, 1:13, 15:21)])
-colnames(percentage_change_reordered)[1] <- 'Tjedna razlika'
-
-
-population_by_age <- read.csv(file = 'data/cro_population_by_age.csv')
-population_per_county <- population_by_age[nrow(population_by_age), ]
-
-# broj stanovnika po zupanijama preuzet s https://www.dzs.hr/
-# previously used population data:
-#population = c(106258, 137487, 121816, 807254, 209573, 115484, 106367, 124517, 44625, 109232, 272673, 66256, 282730, 99210, 145904, 447747, 166112, 73641, 150985, 168213, 309169)
-# replaced with the follwoing which was being used in other plots:
-#                105554, 136429, 122449, 809235, 209955, 114804, 105886, 124407, 44346, 109130, 270877, 65614, 281945, 98899, 144599, 448153, 165885, 72843, 149489, 168055, 309611
-
-population_reordered <- as.numeric(population_per_county[1, c(15, 2:14, 16:22)])
-
-sum_7_reordered <- t(sum_7_df[nrow(sum_7_df), c(14, 1:13, 15:21)])
-sum_7_reordered_norm <- (sum_7_reordered / population_reordered) * 100000
-
-colnames(sum_7_reordered)[1] <- 'Ukupno_7d'
-colnames(sum_7_reordered_norm)[1] <- 'Ukupno_7d_norm'
-
-sum_14_reordered <- t(sum_14_df[nrow(sum_14_df), c(14, 1:13, 15:21)])
-sum_14_reordered_norm <- (sum_14_reordered / population_reordered) * 100000
-
-colnames(sum_14_reordered)[1] <- 'Ukupno_14d'
-colnames(sum_14_reordered_norm)[1] <- 'Ukupno_14d_norm'
-
-hr <-cbind(hr, percentage_change_reordered, sum_7_reordered_norm, sum_14_reordered_norm, sum_7_reordered, sum_14_reordered, population_reordered)
-
-colnames(hr)[16] <- 'Populacija'
-
-
-Ukupno_regija <- hr %>% group_by(Regija) %>% summarise(Ukupno_7d = sum(Ukupno_7d),
-                                                        Ukupno_14d = sum(Ukupno_14d),
-                                                        Populacija_regija = sum(Populacija))
-
-Ukupno_regija$Ukupno_7d_norm_regija <- Ukupno_regija$Ukupno_7d / Ukupno_regija$Populacija_regija * 100000
-Ukupno_regija$Ukupno_14d_norm_regija <- Ukupno_regija$Ukupno_14d / Ukupno_regija$Populacija_regija  * 100000
-
-hr_region_map14 <- ggplot(Ukupno_regija, aes(text = paste("Regija: ", Regija, "<br>", "Ukupno u zadnjih 14 dana na 100k stanovnika: ", round(Ukupno_14d_norm_regija, digits= 2), sep=""))) +
-  ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika po regijama (", last_date, ")", sep="")) +
-  geom_sf(aes_string(fill = 'Ukupno_14d_norm_regija')) +
-  scale_fill_distiller(palette = "RdYlGn", limits = c(0,  200), oob = scales::squish, name='Broj slučajeva') +
-  geom_sf_text(aes(label=round(Ukupno_14d_norm_regija, digits= 2)), fontface="bold", size=5, color="black") +
-  theme(legend.position = "bottom") +
-  theme_void() +
-  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 14 dana po regijama, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
-  theme(plot.caption = element_text(hjust = 0))
-
-hr_region_map14
-
-ggsave(paste('img/', last_date_, '_map_14_day_per_100k_region.png', sep = ''), plot = hr_region_map14, dpi=300, width=309.80, height=215.90, units="mm")
-
-
-
-hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna razlika: ", round(Tjedna.razlika, digits= 2), "%", "<br>",
-                                      "Ukupno u zadnjih 7 dana: ", Ukupno_7d, "<br>",
-                                      "Ukupno u zadnjih 14 dana: ", Ukupno_14d, "<br>",
-                                      "Ukupno u zadnjih 7 dana na 100k: ", round(Ukupno_7d_norm, digits= 2), "<br>",
-                                      "Ukupno u zadnjih 14 dana na 100k: ", round(Ukupno_14d_norm, digits= 2),  "<br>",
-                                      "Populacija: ", Populacija,  "<br>",
-                                      sep=""))) +
-  ggtitle(paste("COVID 19 u Hrvatskoj: Pregled tjedne promjene broja zaraženih po županijama (", last_date, ")", sep="")) +
-  geom_sf(aes_string(fill = 'Tjedna.razlika')) +
-  scale_fill_distiller(palette = "RdYlGn", limits = c(-50, 50), oob = scales::oob_squish_any, name='Promjena u postocima') +
-  geom_sf_text(aes(label=paste(round(Tjedna.razlika, digits= 2), "%", sep="")), fontface="bold", size=5, color="black") +
-  theme(legend.position = "bottom") +
-  theme_void() +
-  labs(caption = paste('Boje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan dana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
-  theme(plot.caption = element_text(hjust = 0))
-
-hr_map
-
-ggsave(paste('img/', last_date_, '_map.png', sep = ''), plot = hr_map, dpi=300, width=309.80, height=215.90, units="mm")
-
-
-hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 7 dana na 100k stanovnika: ", round(Ukupno_7d_norm, digits= 2), sep=""))) +
-  ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 7 dana na 100000 stanovnika (", last_date, ")", sep="")) +
-  geom_sf(aes_string(fill = 'Ukupno_7d_norm')) +
-  scale_fill_distiller(palette = "RdYlGn", limits = c(0,  50), oob = scales::squish, name='Broj slučajeva') +
-  geom_sf_text(aes(label=round(Ukupno_7d_norm, digits= 2)), fontface="bold", size=5, color="black") +
-  theme(legend.position = "bottom") +
-  theme_void() +
-  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 7 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
-  theme(plot.caption = element_text(hjust = 0))
-
-hr_map7
-
-ggsave(paste('img/', last_date_, '_map_7_day_per_100k.png', sep = ''), plot = hr_map7, dpi=300, width=309.80, height=215.90, units="mm")
-
-hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno u zadnjih 14 dana na 100k stanovnika: ", round(Ukupno_14d_norm, digits= 2), sep=""))) +
-  ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika (", last_date, ")", sep="")) +
-  geom_sf(aes_string(fill = 'Ukupno_14d_norm')) +
-  scale_fill_distiller(palette = "RdYlGn", limits = c(0,  100), oob = scales::squish, name='Broj slučajeva') +
-  geom_sf_text(aes(label=round(Ukupno_14d_norm, digits= 2)), fontface="bold", size=5, color="black") +
-  theme(legend.position = "bottom") +
-  theme_void() +
-  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 14 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
-  theme(plot.caption = element_text(hjust = 0))
-
-hr_map14
-
-ggsave(paste('img/', last_date_, '_map_14_day_per_100k.png', sep = ''), plot = hr_map14, dpi=300, width=309.80, height=215.90, units="mm")
-
-hr_map <- ggplotly(hr_map, tooltip = c("text"))
-
-hr_map
-
-saveWidget(hr_map, file = "html/index_map.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (", last_date, ")", sep=""))
-
-
+# gmt to gmt + 1
 generated_time <- format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h')
 
 md_source <- paste('# COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama\n\n',
                    '### (generirano ',  generated_time, ')\n\n',
+                   '### NAPOMENA (04.11.2021.): Stranica se generira automatski. Ako ima grešaka u strojno čitljivim podacima objavljenim na koronavirus.hr, prikazani grafovi neće biti točni. U tom slučaju pokušat ću ih ispraviti čim nađem vremena.\n\n',
+                   #'### NAPOMENA (03.09.2021.): Krivi podaci su manualno ispravljeni, trebalo bi sve biti OK.\n\n',
                    'Interaktivni prikazi dostupni su na sljedećim linkovima:\n\n',
-                   '- [Standardni prikaz](html/index.html) (zadnjih 60 dana)\n',
-                   '- [Prikaz na logaritamskoj skali](html/index_log.html) (zadnjih 60 dana)\n',
+                   '- [Standardni prikaz](html/index.html) (zadnjih 100 dana)\n',
+                   '- [Prikaz na logaritamskoj skali](html/index_log.html) (zadnjih 100 dana)\n',
                    '- [Prikaz na karti](html/index_map.html) (tjedna promjena, zadnjih 7 i 14 dana na 100000 stanovnika)\n',
                    '- [Prikaz po dobnim skupinama](html/index_per_age.html) (zadnjih 180 dostupnih dana)\n',
                    '- [Prikaz po dobnim skupinama i spolu](html/index_pyramid.html) (zadnjih 7 dostupnih dana, na 100000 stanovnika)\n',
                    '- [Prikaz procijepljenosti na karti](html/index_vaccination.html) (zadnji dostupni podaci, ne osvježava se automatski)\n\n',
                    '-----\n\n',
+                   '## Pregled broja zaraženih po županijama\n\n',
+                   '![](img/', last_date_, '_line_plots.png)\n\n',
                    '## Pregled tjedne promjene broja zaraženih po županijama\n\n',
                    '![](img/', last_date_, '_map.png)\n\n',
+                   '## Kretanje broja COVID-19 slučajeva, hospitalizacija i umrlih\n\n',
+                   '![](img/', last_date_, '_cases_hospitalisations_deaths.png)\n\n',
+                   
+                   '## Kretanje udjela pozitivnih testova\n\n',
+                   '![](img/', last_date_, '_percentage_positive_tests.png)\n\n',
+                   
+                   '## Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama\n\n',
+                   '![](img/', last_date_, '_cases_per_age_group_lines.png)\n\n',
+                   
+                   '## Animirani prikaz kretanja broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama\n\n',
+                   '![](img/', last_date_, 'anim_aug_1200.gif)\n\n',
+                   '![](img/anim_cases_', last_date_, '_vs_2020.gif)\n\n',
+                   '![](img/', last_date_, 'all_counties_dots.png)\n\n',
                    '## Ukupan broj zaraženih u zadnjih 7 dana na 100000 stanovnika\n\n',
                    '![](img/', last_date_, '_map_7_day_per_100k.png)\n\n',
                    '## Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika\n\n',
                    '![](img/', last_date_, '_map_14_day_per_100k.png)\n\n',
                    '## Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika po regijama\n\n(napomena: kod ECDC-a boja regije ovisi i o postotku pozitivnih testova, ovdje je prikazan samo broj slučajeva)\n\n',
                    '![](img/', last_date_, '_map_14_day_per_100k_region.png)\n\n',
+                   '(Trend kretanja 14-dnevnog broja slučajeva na 100k stanovnika opisan eksponencijalnom krivuljom n(t) = a * e^(b * t) po regijama. Krivulja aproksimira podatke zadnjih 7 dana, izračunate iz podataka objavljenih na koronavirus.hr, koristeći broj stanovnika po županijama iz 2019. s dzs.hr. Krivulja se prikazuje ukoliko je R^2 aproksimacije > 0.95, prikazana je narančastom bojom. Zelena krivulja prikazuje vrijednosti aproksimacijske krivulje 7 dana u budućnosti (deblja linija), dok su tanjom zelenom linijom prikazane vrijednosti krivulje do dana u kojem bi vrijednost mogla doći do praga od 75/200 zaraženih na 100k stanovnika. Generirano automatski, nakon objave službenih podataka na koronavirus.hr.)\n\n',
+                   '![](img/', last_date_, '_current_Jadranska_Hrvatska.png)\n\n',
+                   '![](img/', last_date_, '_current_Panonska_Hrvatska.png)\n\n',
+                   '![](img/', last_date_, '_current_Grad_Zagreb.png)\n\n',
+                   '![](img/', last_date_, '_current_Sjeverna_Hrvatska.png)\n\n',
+                   '![](img/', last_date_, '_current_Republika_Hrvatska.png)\n\n',
+                   '![](img/', last_date_, '_cases_hospitalisations_deaths_Republika_Hrvatska.png)\n\n',
                    '## Procijepljenost po županijama\n\n(ne osvježava se automatski)\n\n',
                    '![](img/', last_date_, '_vaccination.png)\n\n',
                    '## Pregled broja zaraženih po dobnim skupinama na 100000 stanovnika\n\n',
+                   '(Podaci kasne par dana, prikazano stanje nije finalno.)\n\n',
                    '![](img/', last_date_, '_per_age_group.png)\n\n',
+                   '![](img/', last_date_, '_per_age_group_all_0.png)\n\n',
+                   '![](img/', last_date_, '_per_age_group_all_1.png)\n\n',
                    '## Pregled broja zaraženih po dobnim skupinama i spolu (u zadnjih 7 dostupnih dana) na 100000 stanovnika\n\n',
+                   '(Podaci kasne par dana, prikazano stanje nije finalno.)\n\n',
                    '![](img/', last_date_, '_pyramid.png)\n\n',
                    '-----\n\n',
                    '- [Kod](https://github.com/ppalasek/covid_plots_croatia)\n', sep='')

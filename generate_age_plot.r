@@ -1,7 +1,7 @@
 library(jsonlite)
 library(ggplot2)
 library(zoo) 
-
+library(readr)
 library(colorspace)
 library(gridExtra)
 
@@ -9,6 +9,7 @@ library(plotly)
 library(htmlwidgets)
 
 library(sf)
+sf_use_s2(FALSE)
 
 library(lubridate)
 library(plyr)
@@ -22,17 +23,11 @@ library(reshape2)
 
 Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
 
-# get last date from other source just to store under same file name format
-json_data_ <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
-json_data_$Datum <- as.Date(json_data_$Datum, format="%Y-%m-%d")
-json_data_ <- json_data_[order(json_data_$Datum),]
-last_date_ <- strftime(json_data_$Datum[nrow(json_data_) - 1], "%Y_%m_%d")
-
-
+# get last_date_
+load('data/latest/last_date_.Rda')
 
 # get age data
-json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_osobama')
-
+json_data <- fromJSON('data/latest/last_data_po_osobama.json')
 
 step <- 5
 n <- 180
@@ -51,8 +46,6 @@ max_date = max(json_data$Datum)
 
 json_data <- json_data[order(json_data$Datum),]
 
-last_date <- strftime(json_data$Datum[nrow(json_data)], "%d.%m.%Y.")
-# last_date_ <- strftime(json_data$Datum[nrow(json_data)], "%Y_%m_%d")
 
 
 json_data$dob <- as.Date(paste0(json_data$dob, '-01-01'), format="%Y-%m-%d")
@@ -102,19 +95,19 @@ for(county in c(sort(counties$Zupanija), 'Hrvatska')) {
     mutate_at(vars(-("Datum")), ~replace(., is.na(.), 0))
   
   missing_cols <- setdiff(as.character(c(1:length(labels))), names(age_reshaped))
-
+  
   age_reshaped[missing_cols] <- 0
   
   age_reshaped <- age_reshaped[c('Datum', as.character(1:length(labels)))]
-
+  
   # add missing dates
   missing_rows <- as.Date(setdiff(seq.Date(min_date, max_date, by="day"), age_reshaped$Datum))
   missing_data <- data.frame(missing_rows)
   colnames(missing_data)[1] <- "Datum"
-
+  
   age_reshaped <- rbind.fill(age_reshaped, missing_data)
   age_reshaped[is.na(age_reshaped)] <- 0
-
+  
   # sort by date  
   age_reshaped <- age_reshaped[order(age_reshaped$Datum),]
   
@@ -130,22 +123,25 @@ for(county in c(sort(counties$Zupanija), 'Hrvatska')) {
   
   age_reshaped_sum7$Datum <- age_reshaped$Datum
   
+  # remove last few days as data might not be complete
+  age_reshaped_sum7 <- head(age_reshaped_sum7, n=nrow(age_reshaped_sum7) - 1)
+  
   data_to_plot <- tail(age_reshaped_sum7, n=n)
   
   d <- melt(data_to_plot, id.vars="Datum")
   
   colnames(d)[2:3] <- c('Dobna_skupina', 'Broj_zadnjih_7_data')
   
-  my_breaks <-c(0, 10, 50, 100, 200, 400, 800)
-  my_labels <-c('0', '10', '50', '100', '200', '400', '800+')
+  my_breaks <-c(0, 50, 100, 200, 400, 800, 1600)
+  my_labels <-c('0', '50', '100', '200', '400', '800', '1600+')
   
   p[[i]] <- ggplot(d, aes_string('Datum', colnames(d)[2], fill='Broj_zadnjih_7_data')) + 
     geom_tile() +
     ylab("Dobna skupina") +
     scale_fill_distiller(palette="Spectral", oob = scales::squish, name='Ukupno\nu 7 dana\nna 100000\nstanovnika',
-                        limits = c(0, 800), labels=my_labels, breaks=my_breaks) +
+                         limits = c(0, 1600), labels=my_labels, breaks=my_breaks) +
     theme_minimal()
-
+  
   p[[i]] <- ggplotly(p[[i]])
   
   a[[i]] <- list(
@@ -164,6 +160,8 @@ for(county in c(sort(counties$Zupanija), 'Hrvatska')) {
   p[[i]] <- p[[i]] %>%
     layout(annotations = a[i])
 }
+
+last_date <- strftime(data_to_plot$Datum[nrow(data_to_plot)], "%d.%m.%Y.")
 
 
 from_date <- dmy(last_date) - days(n - 1)
