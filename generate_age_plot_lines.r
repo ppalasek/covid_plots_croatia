@@ -229,8 +229,8 @@ p <- ggplot() +
   ylab('Broj slučajeva na 100k stanovnika') +
   labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. -', last_date, ')')) +
   theme(text = element_text(size=18)) +
-  labs(caption = paste('Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek'))
-
+  labs(caption = paste('Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 p
 
 
