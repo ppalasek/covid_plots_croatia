@@ -143,11 +143,11 @@ for (j in seq(0, difftime(Sys.Date() - 2, as.Date('2021-08-01'), units = c("days
   p <- ggplot() + 
     geom_point(data=cd[cd$Datum!=max(cd$Datum), ], aes(x=variable, y=value), colour='gray', size=0.8) +
     geom_point(data=cd[cd$Datum==max(cd$Datum), ], aes(x=variable, y=value), size=2) +
-    ylab('Broj slučajeva na 100k stanovnika (sedmodnevni prosjek)') +
+    ylab('Broj slučajeva na 100k stanovnika (ukupno u 7 dana)') +
     xlab('Dobna skupina') +
     ylim(0, 1750) +
     labs(title = 'Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj',
-         subtitle=paste(format(as.Date(current_date), "%d.%m.%Y."), 'Crna točka označava sedmodnevni prosjek za prikazani datum, sive točke označavaju sedmodnevni prosjek za 6 dana ranije.'),
+         subtitle=paste(format(as.Date(current_date), "%d.%m.%Y."), 'Crna točka: broj slučajeva u 7 dana do prikazanog datuma, sive točke: sedmodnevni broj slučajeva za 6 dana ranije.'),
          caption = 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Autor: Petar Palašek. Inspirirano animacijom: @ProfColinDavis') +
     theme_minimal()
   p

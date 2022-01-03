@@ -323,7 +323,7 @@ for region in all_vals['cases'][0].keys():
     axs[0].set_yticks(list(axs[0].get_yticks()) + [1])
 
 
-    title = '{}: Kretanje broja slučajeva/hospitalizacija/umrlih. ({})\nKretanje aproksimirano eksponencijalnom funkcijom na temelju podataka za zadnjih 7 dana.'.format(region, last_date['cases']) + '\n(izvori podataka: koronavirus.hr (slučajevi, umrli), hzjz.hr (hospitalizacije). y-os na lijevom grafu je na logaritamskoj skali, linearna na desnom.)\n\nBroj slučajeva u {} dana na 100k stanovnika: {:.2f} ({}).\nBroj umrlih u {} dana: {} ({}).\nBroj hospitaliziranih u {} dana na 1M stanovnika: {:.2f} ({}).\n'.format(n_days, y_vals['cases'][-1], last_date['cases'], n_days, int(y_vals['deaths'][-1]), last_date['deaths'], n_days, y_vals['hospitalisations'][-1], last_date['hospitalisations'])
+    title = '{}: Kretanje broja slučajeva/hospitalizacija/umrlih. ({})\nKretanje aproksimirano eksponencijalnom funkcijom na temelju podataka za zadnjih 7 dana.'.format(region, last_date['cases']) + '\n(izvori podataka: koronavirus.hr (slučajevi, umrli), hzjz.hr (hospitalizacije). y-os na lijevom grafu je na logaritamskoj skali, linearna na desnom.)\n\nBroj slučajeva u {} dana na 100k stanovnika: {} ({}).\nBroj umrlih u {} dana: {} ({}).\nBroj hospitaliziranih u {} dana na 1M stanovnika: {} ({}).\n'.format(n_days, int(y_vals['cases'][-1]), last_date['cases'], n_days, int(y_vals['deaths'][-1]), last_date['deaths'], n_days, int(y_vals['hospitalisations'][-1]), last_date['hospitalisations'])
 
     if r2['cases'] > r2_threshold:
         if doubling_time['cases'] > 0:

@@ -34,7 +34,7 @@ json_data <- fromJSON('data/latest/last_data_po_osobama.json')
 
 step <- 5
 n <- 180
-skip_dates_before <- as.Date('2021-11-28')
+skip_dates_before <- as.Date('2021-12-25')
 
 
 population_by_age <- read.csv(file = 'data/cro_population_by_age.csv')
@@ -145,6 +145,7 @@ for (j in seq(0, difftime(Sys.Date() - 2, as.Date('2021-06-01'), units = c("days
     age_reshaped_sum7 <- head(age_reshaped_sum7, n=nrow(age_reshaped_sum7) - 1)
     
     data_to_plot <- tail(age_reshaped_sum7, n=n)
+  
     
     current_day <- data_to_plot[data_to_plot$Datum <= current_date & data_to_plot$Datum >= prev_date, ]
     
@@ -152,7 +153,7 @@ for (j in seq(0, difftime(Sys.Date() - 2, as.Date('2021-06-01'), units = c("days
     cd <- melt(current_day, id.vars="Datum")
     
     if ((i - 1) %% 5 == 0) {
-      ylab <- ylab('Broj slučajeva / 100k\n(sedmodnevni prosjek)')
+      ylab <- ylab('Broj slučajeva / 100k\n(ukupno u 7 dana)')
     }
     else {
       ylab <- ylab('')
@@ -163,7 +164,7 @@ for (j in seq(0, difftime(Sys.Date() - 2, as.Date('2021-06-01'), units = c("days
       geom_point(data=cd[cd$Datum==max(cd$Datum), ], aes(x=variable, y=value), size=1.5) +
       ylab +
       xlab('Dobna skupina') +
-      ylim(0, 1800) +
+      ylim(0, max(1500, max(cd$value))) +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))
 
@@ -191,7 +192,7 @@ for (j in seq(0, difftime(Sys.Date() - 2, as.Date('2021-06-01'), units = c("days
   s <- subplot(p, nrows = 5, margin=c(0.01,0.01,0.04,0.04), titleY = TRUE) %>%
     add_annotations(x = 0.7,
                     y = 0.07,
-                    text = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po županijama i dobnim skupinama u Hrvatskoj (', format(as.Date(current_date), "%d.%m.%Y."), ')\n\n', 'Crna točka označava sedmodnevni prosjek za prikazani datum i dobnu skupinu, sive točke označavaju sedmodnevni prosjek za 6 dana ranije.\nNa y-osi prikazan je broj slučajeva na 100 tisuća stanovnika, na x-osi prikazane su dobne skupine.\n\n', 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.).\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ' Autor: Petar Palašek, ppalasek.github.io', sep=''),
+                    text = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po županijama i dobnim skupinama u Hrvatskoj (', format(as.Date(current_date), "%d.%m.%Y."), ')\n\n', 'Crna točka: broj slučajeva u 7 dana do prikazanog datuma i dobnu skupinu, sive točke označavaju sedmodnevni broj slučajeva za 6 dana ranije.\nNa y-osi prikazan je broj slučajeva na 100 tisuća stanovnika, na x-osi prikazane su dobne skupine.\n\n', 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.).\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ' Autor: Petar Palašek, ppalasek.github.io', sep=''),
 
                     font = f,
                     xref = "paper",

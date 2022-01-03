@@ -80,10 +80,10 @@ hr_region_map14 <- ggplot(Ukupno_regija, aes(text = paste("Regija: ", Regija, "<
   ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika po regijama (", last_date, ")", sep="")) +
   geom_sf(aes_string(fill = 'Ukupno_14d_norm_regija')) +
   scale_fill_distiller(palette = "RdYlGn", limits = c(0,  200), oob = scales::squish, name='Broj slučajeva') +
-  geom_sf_text(aes(label=round(Ukupno_14d_norm_regija, digits= 2)), fontface="bold", size=5, color="black") +
+  geom_sf_text(aes(label=round(Ukupno_14d_norm_regija, digits= 0)), fontface="bold", size=5, color="black") +
   theme(legend.position = "bottom") +
   theme_void() +
-  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 14 dana po regijama, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
+  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 14 dana po regijama, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek, ppalasek.github.io', sep='')) +
   theme(plot.caption = element_text(hjust = 0))
 
 hr_region_map14
@@ -102,10 +102,10 @@ hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna r
   ggtitle(paste("COVID 19 u Hrvatskoj: Pregled tjedne promjene broja zaraženih po županijama (", last_date, ")", sep="")) +
   geom_sf(aes_string(fill = 'Tjedna.razlika')) +
   scale_fill_distiller(palette = "RdYlGn", limits = c(-50, 50), oob = scales::oob_squish_any, name='Promjena u postocima') +
-  geom_sf_text(aes(label=paste(round(Tjedna.razlika, digits= 2), "%", sep="")), fontface="bold", size=5, color="black") +
+  geom_sf_text(aes(label=paste(sprintf("%+d", round(Tjedna.razlika, digits= 0)), "%", sep="")), fontface="bold", size=5, color="black") +
   theme(legend.position = "bottom") +
   theme_void() +
-  labs(caption = paste('Boje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan dana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
+  labs(caption = paste('Boje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan dana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek, ppalasek.github.io', sep='')) +
   theme(plot.caption = element_text(hjust = 0))
 
 hr_map
@@ -117,10 +117,10 @@ hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno 
   ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 7 dana na 100000 stanovnika (", last_date, ")", sep="")) +
   geom_sf(aes_string(fill = 'Ukupno_7d_norm')) +
   scale_fill_distiller(palette = "RdYlGn", limits = c(0,  50), oob = scales::squish, name='Broj slučajeva') +
-  geom_sf_text(aes(label=round(Ukupno_7d_norm, digits= 2)), fontface="bold", size=5, color="black") +
+  geom_sf_text(aes(label=round(Ukupno_7d_norm, digits= 0)), fontface="bold", size=5, color="black") +
   theme(legend.position = "bottom") +
   theme_void() +
-  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 7 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
+  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 7 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek, ppalasek.github.io', sep='')) +
   theme(plot.caption = element_text(hjust = 0))
 
 hr_map7
@@ -131,10 +131,10 @@ hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno
   ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika (", last_date, ")", sep="")) +
   geom_sf(aes_string(fill = 'Ukupno_14d_norm')) +
   scale_fill_distiller(palette = "RdYlGn", limits = c(0,  100), oob = scales::squish, name='Broj slučajeva') +
-  geom_sf_text(aes(label=round(Ukupno_14d_norm, digits= 2)), fontface="bold", size=5, color="black") +
+  geom_sf_text(aes(label=round(Ukupno_14d_norm, digits= 0)), fontface="bold", size=5, color="black") +
   theme(legend.position = "bottom") +
   theme_void() +
-  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 14 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek', sep='')) +
+  labs(caption = paste('Boje prikazuju ukupan broj slučajeva zadnjih 14 dana u svakoj županiji, normalizirano na 100000 stanovnika.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: koronavirus.hr, dzs.hr, autor: Petar Palašek, ppalasek.github.io', sep='')) +
   theme(plot.caption = element_text(hjust = 0))
 
 hr_map14

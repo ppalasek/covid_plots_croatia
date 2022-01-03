@@ -153,20 +153,20 @@ for (j in seq(0, difftime(Sys.Date() + days(30), as.Date('2021-08-01'), units = 
   points <- ggplot() +  geom_point(data=ly_cd[ly_cd$Datum!=max(ly_cd$Datum), ], aes(x=variable, y=value, position = "dodge"), colour='lightblue', size=0.8) +
     geom_point(data=ly_cd[ly_cd$Datum==max(ly_cd$Datum), ], aes(x=variable, y=value, position = "dodge"), size=2, colour='blue') 
   
-  title <- paste('Plava točka: sedmodnevni prosjek za ', format(as.Date(ly_current_date), "%d.%m.%Y."),', svjetloplave točke: sedmodnevni prosjek za 6 dana ranije.',  sep = '')
+  title <- paste('Plava točka: broj slučajeva u 7 dana do ', format(as.Date(ly_current_date), "%d.%m.%Y."),', svjetloplave točke: sedmodnevni broj slučajeva za 6 dana ranije.',  sep = '')
   
   if (current_date < Sys.Date() - days(1)) {
     points <- points + geom_point(data=cd[cd$Datum!=max(cd$Datum), ], aes(x=variable, y=value, position = "dodge"), colour='gray', size=0.8) +
       geom_point(data=cd[cd$Datum==max(cd$Datum), ], aes(x=variable, y=value, position = "dodge"), size=2)
     
-    title <- paste(title, '\n', 'Crna točka: sedmodnevni prosjek za ', format(as.Date(current_date), "%d.%m.%Y."),', sive točke: sedmodnevni prosjek za 6 dana ranije.',  sep = '')
+    title <- paste(title, '\n', 'Crna točka: broj slučajeva u 7 dana do ', format(as.Date(current_date), "%d.%m.%Y."),', sive točke: sedmodnevni broj slučajeva za 6 dana ranije.',  sep = '')
   }
   else {
     
   }
   
   p <- points +
-    ylab('Broj slučajeva na 100k stanovnika (sedmodnevni prosjek)') +
+    ylab('Broj slučajeva na 100k stanovnika (ukupno u 7 dana)') +
     xlab('Dobna skupina') +
     ylim(0, 1750) +
     labs(title = 'Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj',

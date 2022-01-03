@@ -184,7 +184,7 @@ for region in all_vals[0].keys():
         else:
             period_type = 'prepolavljanja'
 
-        plt.suptitle('{}: Procjena broja slučajeva u 14 dana na 100000 stanovnika.\nt_({}) = 0. Broj slučajeva {}: {:.2f}. Procijenjeni period {}: {:.2f} ± {:.2f} dana'.format(region, first_date, last_date, br, period_type, abs(round(doubling_time, 2)), abs(round(doubling_time_error, 2))), y=1.05)
+        plt.suptitle('{}: Procjena broja slučajeva u 14 dana na 100000 stanovnika.\nt_({}) = 0. Broj slučajeva {}: {}. Procijenjeni period {}: {:.2f} ± {:.2f} dana'.format(region, first_date, last_date, int(br), period_type, abs(round(doubling_time, 2)), abs(round(doubling_time_error, 2))), y=1.05)
     else:
         plt.suptitle('{}: Broj slučajeva u 14 dana na 100000 stanovnika.\nt_({}) = 0. Broj slučajeva {}: {:.2f}.'.format(region, first_date, last_date, br), y=1.05)
     

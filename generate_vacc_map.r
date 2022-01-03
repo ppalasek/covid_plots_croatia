@@ -26,8 +26,8 @@ library(readr)
 load('data/latest/last_date_.Rda')
 
 #https://www.hzjz.hr/aktualnosti/covid-19-izvjesce-hzjz-a/
-vacc_data <- read.csv(file = 'data/vaccination/cro_vaccination_per_county_2021_11_14.csv')
-vacc_date <- "14.11.2021."
+vacc_data <- read.csv(file = 'data/vaccination/cro_vaccination_per_county_2021_12_26.csv')
+vacc_date <- "26.12.2021."
 
 
 first_dose_reordered <- as.numeric(vacc_data[1, c(15, 2:14, 16:22)])
@@ -49,7 +49,7 @@ hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Prva doz
   ggtitle(paste("COVID 19 u Hrvatskoj: Procijepljenost po županijama (", vacc_date, ")", sep="")) +
   geom_sf(aes_string(fill = 'fully_vacc_reordered')) +
   scale_fill_distiller(palette = "RdYlGn", direction=1, limits = c(0, 100), oob = scales::squish, name='Postotak\nprocijepljenosti') +
-  geom_sf_text(aes(label=paste(round(fully_vacc_reordered, digits= 2), "%", sep="")), fontface="bold", size=5, color="black") +
+  geom_sf_text(aes(label=paste(round(fully_vacc_reordered, digits= 0), "%", sep="")), fontface="bold", size=5, color="black") +
   theme(legend.position = "bottom") +
   theme_void() +
   labs(caption = paste('Postotak procijepljenosti po županijama (s obje doze) u odnosu na ukupno stanovništvo županije.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: hzjz.hr, autor: Petar Palašek', sep='')) +

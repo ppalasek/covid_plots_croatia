@@ -4,6 +4,7 @@ library(plotly)
 library(htmlwidgets)
 library(readr)
 
+library(grid)
 
 Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
 
@@ -27,9 +28,8 @@ plot_df <- merge(diff_df, percentage_change, by=c("Datum"))
 
 data_to_plot <- tail(plot_df, n=n)
 
-f <- list(
-  size = 13,
-  color = "black")
+f <- list(size = 18, color = "black")
+f2 <- list(size = 16, color = "black")
 
 for(use_log_scale in c(FALSE, TRUE)) {
   p <- list()
@@ -46,14 +46,23 @@ for(use_log_scale in c(FALSE, TRUE)) {
       title <- gsub("[.]", "-", title)
     }
     
+    if ((i - 1) %% 5 == 0) {
+      ylab <- ylab("Broj slučajeva")
+    }
+    else {
+      ylab <- ylab('')
+    }
+    
     p[[i]] <- ggplot(data=data_to_plot, aes_string(x='Datum', y=colnames(data_to_plot)[1 + i])) +
-      ylab("Broj slučajeva") +
+      ylab +
       geom_bar(stat="identity") +
       geom_col(aes_string(fill=colnames(data_to_plot)[1 + i + 22])) +
       scale_fill_distiller(palette = "RdYlGn", limits = c(-50, 50), oob = scales::oob_squish_any, name='') +
       geom_line(data=tail(avg7_df, n=n), aes_string(x='Datum', y=colnames(data_to_plot)[1 + i]), size=1, colour='blue') +  #
-      theme_minimal()
-    
+      theme_minimal() +
+      theme(axis.text.x = element_text(size = 10)) +
+      theme(plot.margin = unit(c(1,1,1,1), "cm"))
+ 
     if (use_log_scale) {
       p[[i]] <- p[[i]] + scale_y_continuous(trans=scales::pseudo_log_trans(base = 10))
     }
@@ -61,15 +70,17 @@ for(use_log_scale in c(FALSE, TRUE)) {
     p[[i]] <- ggplotly(p[[i]])
     
     a[[i]] <- list(
-      text = paste('\n',title, ' (', diff_df[nrow(diff_df), i], ')\nTjedna razlika: ', format(round(data_to_plot[nrow(data_to_plot), 1 + i + 22], 2), nsmall = 2), '%', sep=''),
+      text = paste('\n<b>', title, '</b> (', diff_df[nrow(diff_df), i], ')\nTjedna razlika <b>', sprintf("%+d", round(data_to_plot[nrow(data_to_plot), 1 + i + 22], 0)), '</b>%', sep=''),
       font = f,
       xref = "paper",
       yref = "paper",
       yanchor = "bottom",
+      yshift = 10,
       xanchor = "center",
       align = "center",
+      cliponaxis = FALSE,
       x = 0.5,
-      y = 0.92,
+      y = 0.92, # 0.92
       showarrow = FALSE
     )
     
@@ -77,11 +88,11 @@ for(use_log_scale in c(FALSE, TRUE)) {
       layout(annotations = a[i])
   }
   
-  s <- subplot(p, nrows = 5, margin=c(0.02,0.02,0.05,0.02), titleY = TRUE) %>%
+  s <- subplot(p, nrows = 5, margin=c(0.01,0.0,0.04,0.05), titleY = TRUE, heights=c(0.17, 0.22, 0.22, 0.22, 0.17)) %>% # 2 0 5 4
     add_annotations(x = 0.65,
                     y = 0.07,
-                    text = paste('COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (', last_date ,')\n\nBoje prikazuju promjenu prosječnog broja slučajeva zadnjih tjedan\ndana u usporedbi s prosjekom broja slučajeva prethodnog tjedna.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), '\nIzvor podataka: koronavirus.hr\n\nAutor: Petar Palašek', sep=''),
-                    font = f,
+                    text = paste('<b>COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (', last_date ,')</b>\n\nBoje prikazuju promjenu broja slučajeva zadnjih tjedan dana u usporedbi s brojem slučajeva prethodnog tjedna.\nBroj novih slučajeva u prošlih 24 sata prikazan je u zagradi kraj imena županije.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), '\nIzvor podataka: koronavirus.hr\n\nAutor: Petar Palašek, ppalasek.github.io', sep=''),
+                    font = f2,
                     xref = "paper",
                     yref = "paper",
                     align='left',
