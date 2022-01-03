@@ -70,7 +70,8 @@ g <- ggplot() +
   xlab('Datum') + 
   labs(caption = paste('Izvor podataka: hzjz.hr (broj pozitivnih i učinjenih testova). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   theme_minimal() +
-  theme(text = element_text(size=18))
+  theme(text = element_text(size=18)) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
   
   
 g
@@ -98,8 +99,8 @@ g3 <- ggplot() +
   scale_x_date(labels = date_format("%b %Y."), date_breaks = "1 month") +
   theme_minimal() +
   theme(text = element_text(size=18)) +
-  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io'))
-
+  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 g3
 
 ggsave(paste('img/', last_date_, '_cases_hospitalisations_deaths.png', sep = ''),
