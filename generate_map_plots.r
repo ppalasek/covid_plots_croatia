@@ -6,23 +6,21 @@ sf_use_s2(FALSE)
 
 Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
 
+hr <- st_read(dsn = "data/Official_Croatia_Boundaries/CROATIA_HR_Županije_ADMIN1.shp")
 
-# before running download data from https://www.diva-gis.org/gdata and save into data folder
-hr <- st_read(dsn = "data/HRV_adm", layer = "HRV_adm1")
+hr <- hr[order(hr$ZUP_IME),]
+hr$Zupanija <- hr$ZUP_IME
 
-region <- rep(NA, nrow(hr))
+hr$ZUP_IME
 
-region[c(1, 18, 12, 2, 11, 19, 6, 15)] <- 'Panonska Hrvatska'
-region[c(13, 9, 20, 14, 16, 5, 3)] <- 'Jadranska Hrvatska'
-region[c(4)] <- 'Grad Zagreb'
-region[c(10, 17, 7, 8, 21)] <- 'Sjeverna Hrvatska'
+Regija <- rep(NA, nrow(hr))
 
-colnames(hr)[5] <- "Zupanija"
+Regija[c(1, 18, 12, 2, 11, 19, 6, 15)] <- 'Panonska Hrvatska'
+Regija[c(13, 9, 20, 14, 16, 5, 3)] <- 'Jadranska Hrvatska'
+Regija[c(4)] <- 'Grad Zagreb'
+Regija[c(10, 17, 7, 8, 21)] <- 'Sjeverna Hrvatska'
 
-region <- region[c(14, 1:13, 15:21)]
-
-hr <- cbind(hr, region)
-colnames(hr)[10] <- "Regija"
+hr <- cbind(hr, Regija)
 
 
 
@@ -36,33 +34,41 @@ load('data/latest/sum_14_df.Rda')
 load('data/latest/last_date_.Rda')
 load('data/latest/last_date.Rda')
 
+hr$ZUP_IME
 
-
-percentage_change_reordered <- t(percentage_change[nrow(percentage_change), c(14, 1:13, 15:21)])
+percentage_change_reordered <- t(percentage_change[nrow(percentage_change), c(1:21)])
 colnames(percentage_change_reordered)[1] <- 'Tjedna razlika'
 
 
 population_by_age <- read.csv(file = 'data/cro_population_by_age.csv')
 population_per_county <- population_by_age[nrow(population_by_age), ]
 
-# broj stanovnika po zupanijama preuzet s https://www.dzs.hr/
-population_reordered <- as.numeric(population_per_county[1, c(15, 2:14, 16:22)])
 
-sum_7_reordered <- t(sum_7_df[nrow(sum_7_df), c(14, 1:13, 15:21)])
+hr$ZUP_IME
+
+# broj stanovnika po zupanijama preuzet s https://www.dzs.hr/
+population_reordered <- as.numeric(population_per_county[1, c(2:22)])
+
+population_reordered
+
+sum_7_df[nrow(sum_7_df),c(1:21)]
+
+sum_7_reordered <- t(sum_7_df[nrow(sum_7_df), c(1:21)])
 sum_7_reordered_norm <- (sum_7_reordered / population_reordered) * 100000
 
 colnames(sum_7_reordered)[1] <- 'Ukupno_7d'
 colnames(sum_7_reordered_norm)[1] <- 'Ukupno_7d_norm'
 
-sum_14_reordered <- t(sum_14_df[nrow(sum_14_df), c(14, 1:13, 15:21)])
+
+sum_14_reordered <- t(sum_14_df[nrow(sum_14_df), c(1:21)])
 sum_14_reordered_norm <- (sum_14_reordered / population_reordered) * 100000
 
 colnames(sum_14_reordered)[1] <- 'Ukupno_14d'
 colnames(sum_14_reordered_norm)[1] <- 'Ukupno_14d_norm'
 
 hr <-cbind(hr, percentage_change_reordered, sum_7_reordered_norm, sum_14_reordered_norm, sum_7_reordered, sum_14_reordered, population_reordered)
-
-colnames(hr)[16] <- 'Populacija'
+colnames(hr)
+colnames(hr)[10] <- 'Populacija'
 
 print(colnames(hr))
 
@@ -73,8 +79,12 @@ Ukupno_regija <- hr %>% group_by(Regija) %>% summarise(Ukupno_7d = sum(Ukupno_7d
                                                        Ukupno_14d = sum(Ukupno_14d),
                                                        Populacija_regija = sum(Populacija))
 
+Ukupno_regija
+
 Ukupno_regija$Ukupno_7d_norm_regija <- Ukupno_regija$Ukupno_7d / Ukupno_regija$Populacija_regija * 100000
 Ukupno_regija$Ukupno_14d_norm_regija <- Ukupno_regija$Ukupno_14d / Ukupno_regija$Populacija_regija  * 100000
+
+Ukupno_regija
 
 hr_region_map14 <- ggplot(Ukupno_regija, aes(text = paste("Regija: ", Regija, "<br>", "Ukupno u zadnjih 14 dana na 100k stanovnika: ", round(Ukupno_14d_norm_regija, digits= 2), sep=""))) +
   ggtitle(paste("COVID 19 u Hrvatskoj: Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika po regijama (", last_date, ")", sep="")) +

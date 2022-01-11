@@ -29,17 +29,20 @@ load('data/latest/last_date_.Rda')
 vacc_data <- read.csv(file = 'data/vaccination/cro_vaccination_per_county_2021_12_26.csv')
 vacc_date <- "26.12.2021."
 
-
-first_dose_reordered <- as.numeric(vacc_data[1, c(15, 2:14, 16:22)])
-fully_vacc_reordered <- as.numeric(vacc_data[2, c(15, 2:14, 16:22)])
+first_dose_reordered <- as.numeric(vacc_data[1, 2:22])
+fully_vacc_reordered <- as.numeric(vacc_data[2, 2:22])
 
 first_dose_reordered
 fully_vacc_reordered
 
-# before running download data from https://www.diva-gis.org/gdata and save into data folder
-hr <- st_read(dsn = "data/HRV_adm", layer = "HRV_adm1")
+hr <- st_read(dsn = "data/Official_Croatia_Boundaries/CROATIA_HR_Županije_ADMIN1.shp")
 
-colnames(hr)[5] <- "Zupanija"
+vacc_data
+
+hr <- hr[order(hr$ZUP_IME),]
+hr$Zupanija <- hr$ZUP_IME
+
+hr$ZUP_IME
 
 hr <-cbind(hr, first_dose_reordered, fully_vacc_reordered)
 
@@ -54,6 +57,9 @@ hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Prva doz
   theme_void() +
   labs(caption = paste('Postotak procijepljenosti po županijama (s obje doze) u odnosu na ukupno stanovništvo županije.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), ', izvor podataka: hzjz.hr, autor: Petar Palašek', sep='')) +
   theme(plot.caption = element_text(hjust = 0))
+
+hr_map
+
 
 ggsave(paste('img/', last_date_, '_vaccination.png', sep = ''), plot = hr_map, dpi=300, width=309.80, height=215.90, units="mm")
 
