@@ -168,7 +168,7 @@ for (j in seq(0, difftime(Sys.Date() + days(30), as.Date('2021-08-01'), units = 
   p <- points +
     ylab('Broj slučajeva na 100k stanovnika (ukupno u 7 dana)') +
     xlab('Dobna skupina') +
-    ylim(0, 1750) +
+    ylim(0, 2500) +
     labs(title = 'Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj',
          subtitle=title,
          caption = 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Autor: Petar Palašek. Inspirirano animacijom: @ProfColinDavis') +
