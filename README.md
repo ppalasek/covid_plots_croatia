@@ -11,7 +11,6 @@ Some of the plots are also saved as interactive plots using ggplotly and htmlwid
 ## Usage
 
 * Install all dependencies (TODO: list them).
-* Download Croatian map data from https://www.diva-gis.org/gdata and save into data/HRV_adm/.
 * Run ./do_all.sh
   * This checks whether new data has been published on koronavirus.hr (https://www.koronavirus.hr/json/?action=po_danima_zupanijama_zadnji', using check_covid_data.py)
   * get_data.r gets the data from koronavirus.hr, generate_region_data.r generates data per region. The data is stored at:
@@ -81,7 +80,7 @@ The name of the script used to generate each of the plots is mentioned under eac
 
 * This plot is generated using the generate_map_plots.r script.
 
-![](img/2021_11_30_map.png)
+![](img/2022_01_10_map.png)
 
 ## Kretanje broja COVID-19 slučajeva, hospitalizacija i umrlih (Number of daily cases, hospitalisations, people on raspirators and deaths)
 
@@ -119,13 +118,13 @@ The name of the script used to generate each of the plots is mentioned under eac
 
 * Generated in generate_map_plots.r.
 
-![](img/2021_11_30_map_7_day_per_100k.png)
+![](img/2022_01_10_map_7_day_per_100k.png)
 
 ## Ukupan broj zaraženih u zadnjih 14 dana na 100000 stanovnika
 
 * Generated in generate_map_plots.r.
 
-![](img/2021_11_30_map_14_day_per_100k.png)
+![](img/2022_01_10_map_14_day_per_100k.png)
 
 
 
@@ -133,7 +132,7 @@ The name of the script used to generate each of the plots is mentioned under eac
 
 * Generated in generate_map_plots.r.
 
-![](img/2021_11_30_map_14_day_per_100k_region.png)
+![](img/2022_01_10_map_14_day_per_100k_region.png)
 
 ## Trends per region (with exponential fit) 
 
@@ -159,7 +158,7 @@ The name of the script used to generate each of the plots is mentioned under eac
 
 * Generated using generate_vacc_map.r.
 
-![](img/2021_11_30_vaccination.png)
+![](img/2022_01_10_vaccination.png)
 
 ## Pregled broja zaraženih po dobnim skupinama na 100000 stanovnika (Overview of cases per age group)
 
