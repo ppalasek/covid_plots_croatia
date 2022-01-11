@@ -26,10 +26,10 @@ md_source <- paste('# COVID 19 u Hrvatskoj: Pregled broja zaraženih po županij
                    '![](img/', last_date_, '_line_plots.png)\n\n',
                    '## Pregled tjedne promjene broja zaraženih po županijama\n\n',
                    '![](img/', last_date_, '_map.png)\n\n',
-                   '## Kretanje broja COVID-19 slučajeva, hospitalizacija i umrlih\n\n',
+                   '## Kretanje broja COVID-19 slučajeva, hospitalizacija i umrlih\n\n(napomena: podaci o hospitalizacijama i broju osoba na respiratorima se ne objavljuju svakodnevno, prikazani su zadnji dostupni podaci)\n\n',
                    '![](img/', last_date_, '_cases_hospitalisations_deaths.png)\n\n',
                    
-                   '## Kretanje udjela pozitivnih testova\n\n',
+                   '## Kretanje udjela pozitivnih testova\n\n(zadnji dostupni podaci)\n\n',
                    '![](img/', last_date_, '_percentage_positive_tests.png)\n\n',
                    
                    '## Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama\n\n',
