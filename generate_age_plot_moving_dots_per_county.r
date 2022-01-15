@@ -34,7 +34,7 @@ json_data <- fromJSON('data/latest/last_data_po_osobama.json')
 
 step <- 5
 n <- 180
-skip_dates_before <- as.Date('2021-12-25')
+skip_dates_before <- as.Date('2022-01-05')
 
 
 population_by_age <- read.csv(file = 'data/cro_population_by_age.csv')
@@ -72,7 +72,7 @@ counties <- unique(json_data[c("Zupanija")])
 
 
 
-for (j in seq(0, difftime(Sys.Date() - 2, as.Date('2021-06-01'), units = c("days")))) {
+for (j in seq(0, difftime(Sys.Date() - 3, as.Date('2021-06-01'), units = c("days")))) {
   print(j)
   current_date <- as.Date('2021-06-01') + days(j)
   

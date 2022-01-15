@@ -51,8 +51,6 @@ max_date = max(json_data$Datum)
 
 json_data <- json_data[order(json_data$Datum),]
 
-last_date <- strftime(json_data$Datum[nrow(json_data)], "%d.%m.%Y.")
-
 
 json_data$dob <- as.Date(paste0(json_data$dob, '-01-01'), format="%Y-%m-%d")
 
@@ -130,7 +128,7 @@ d
 
 library(tidyverse)
 
-for (j in seq(0, difftime(Sys.Date() - 2, as.Date('2021-08-01'), units = c("days")))) {
+for (j in seq(0, difftime(Sys.Date() - 3, as.Date('2021-08-01'), units = c("days")))) {
   print(j)
   current_date <- as.Date('2021-08-01') + days(j)
   

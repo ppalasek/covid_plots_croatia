@@ -48,10 +48,6 @@ max_date = max(json_data$Datum)
 
 json_data <- json_data[order(json_data$Datum),]
 
-last_date <- strftime(json_data$Datum[nrow(json_data)], "%d.%m.%Y.")
-# last_date_ <- strftime(json_data$Datum[nrow(json_data)], "%Y_%m_%d")
-
-
 json_data$dob <- as.Date(paste0(json_data$dob, '-01-01'), format="%Y-%m-%d")
 
 json_data$age <- round(time_length(difftime(json_data$Datum, json_data$dob), "years"))
@@ -132,8 +128,8 @@ for (j in seq(0, difftime(Sys.Date() + days(30), as.Date('2021-08-01'), units = 
   print(j)
   current_date <- as.Date('2021-08-01') + days(j)
   
-  if (current_date > Sys.Date() - days(2)) {
-    current_date <- Sys.Date() - days(2)
+  if (current_date > Sys.Date() - days(3)) {
+    current_date <- Sys.Date() - days(3)
   }
   
   prev_date  = as.Date(current_date) - days(6)
