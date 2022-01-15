@@ -227,7 +227,7 @@ p <- ggplot() +
   theme_minimal() +
   theme(legend.position="right") +
   ylab('Broj slučajeva na 100k stanovnika') +
-  labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. -', last_date, ')')) +
+  labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. -', last_date, ')', sep='')) +
   theme(text = element_text(size=18)) +
   labs(caption = paste('Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
@@ -235,6 +235,98 @@ p
 
 
 ggsave(paste('img/', last_date_, '_cases_per_age_group_lines.png', sep = ''),
+       plot = p, dpi=300, width=1600*4, height=700*4, units="px",
+       bg = "white")
+
+
+
+p <- ggplot() + 
+  geom_line(data=data_to_plot, aes(Datum, y=`20-24`, colour='20-24', size='20-24')) +
+  
+  geom_line(data=data_to_plot, aes(Datum, y=`30-34`, colour='30-34', size='30-34')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`35-39`, colour='35-39', size='35-39')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`40-44`, colour='40-44', size='40-44')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`45-49`, colour='45-49', size='45-49')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`50-54`, colour='50-54', size='50-54')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`55-59`, colour='55-59', size='55-59')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`60-64`, colour='60-64', size='60-64')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`65-69`, colour='65-69', size='65-69')) +
+  
+  
+  
+  geom_line(data=data_to_plot, aes(Datum, y=`70-74`, colour='70-74', size='70-74')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`75-79`, colour='75-79', size='75-79')) + 
+  geom_line(data=data_to_plot, aes(Datum, y=`80-84`, colour='80-84', size='80-84')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`85+`, colour='85+', size='85+')) +
+  
+  geom_line(data=data_to_plot, aes(Datum, y=`25-29`, colour='25-29', size='25-29')) +
+  
+  geom_line(data=data_to_plot, aes(Datum, y=`0-4`, colour='0-4', size='0-4')) +
+  geom_line(data=data_to_plot, aes(Datum, y=`5-9`, colour='5-9', size='5-9')) +
+  
+  
+  geom_line(data=data_to_plot, aes(Datum, y=`15-19`, colour='15-19', size='15-19')) + 
+  geom_line(data=data_to_plot, aes(Datum, y=`10-14`, colour='10-14', size='10-14')) +
+  
+  #scale_x_date(labels = date_format("%d.%m."), date_breaks = "1 week") +
+  scale_x_date(labels = date_format("%b %Y."), date_breaks = "1 month") +
+  scale_color_manual(name='Dobna skupina', values = c(
+    '0-4' = 'black',
+    '5-9' = 'black',
+    '10-14' = 'black',
+    
+    '15-19' = colour_hex_codes[1],
+    '20-24' = colour_hex_codes[1],
+    
+    
+    '25-29' = colour_hex_codes[2],
+    '30-34' = colour_hex_codes[2],
+    '35-39' = colour_hex_codes[2],
+    '40-44' = colour_hex_codes[2],
+    '45-49' = colour_hex_codes[2],
+    
+    '50-54' = colour_hex_codes[3],
+    '55-59' = colour_hex_codes[3],
+    '60-64' = colour_hex_codes[4],
+    '65-69' = colour_hex_codes[4],
+    '70-74' = colour_hex_codes[5],
+    '75-79' = colour_hex_codes[5],
+    '80-84' = colour_hex_codes[6],
+    '85+' = colour_hex_codes[6]))  +
+  scale_size_manual(name='Dobna skupina', values = c(
+    '0-4' = 0.3,
+    '5-9' = 0.7,
+    '10-14' = 1.2,
+    
+    '15-19' = 1.2,
+    '20-24' = 0.5,
+    
+    '25-29' = 1.2,
+    '30-34' = 0.9,
+    '35-39' = 0.6,
+    '40-44' = 0.4,
+    '45-49' = 0.2,
+    
+    '50-54' = 1,
+    '55-59' = 0.5,
+    '60-64' = 1,
+    '65-69' = 0.5,
+    '70-74' = 1,
+    '75-79' = 0.5,
+    '80-84' = 1,
+    '85+' = 0.5)) +
+  theme_minimal() +
+  theme(legend.position="right") +
+  ylab('Broj slučajeva na 100k stanovnika') +
+  scale_y_continuous(trans='pseudo_log', breaks = c(0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096)) +
+  labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. -', last_date, ') (logaritamska skala)', sep='')) +
+  theme(text = element_text(size=18)) +
+  labs(caption = paste('Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+p
+
+
+ggsave(paste('img/', last_date_, '_cases_per_age_group_lines_log.png', sep = ''),
        plot = p, dpi=300, width=1600*4, height=700*4, units="px",
        bg = "white")
 
