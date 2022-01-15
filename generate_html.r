@@ -12,8 +12,8 @@ generated_time <- format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. 
 
 md_source <- paste('# COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama\n\n',
                    '### (generirano ',  generated_time, ')\n\n',
-                   '### NAPOMENA (04.11.2021.): Stranica se generira automatski. Ako ima grešaka u strojno čitljivim podacima objavljenim na koronavirus.hr, prikazani grafovi neće biti točni. U tom slučaju pokušat ću ih ispraviti čim nađem vremena.\n\n',
-                   #'### NAPOMENA (03.09.2021.): Krivi podaci su manualno ispravljeni, trebalo bi sve biti OK.\n\n',
+                   '#### NAPOMENA (04.11.2021.): Stranica se generira automatski. Ako ima grešaka u strojno čitljivim podacima objavljenim na koronavirus.hr, prikazani grafovi neće biti točni. U tom slučaju pokušat ću ih ispraviti čim nađem vremena.\n\n',
+                   '#### NAPOMENA (15.01.2022.): Od danas se koriste podaci iz popisa stanovništva 2021. u svim prikazima u kojima je to moguće. U prikazima po dobnim skupinama i dalje se koriste podaci iz 2019. jer detaljniji podaci još nisu dostupni. Promijenjene su skale na nekim grafovima kako bi bili informativniji.\n\n',
                    'Interaktivni prikazi dostupni su na sljedećim linkovima:\n\n',
                    '- [Standardni prikaz](html/index.html) (zadnjih 100 dana)\n',
                    '- [Prikaz na logaritamskoj skali](html/index_log.html) (zadnjih 100 dana)\n',
@@ -28,12 +28,14 @@ md_source <- paste('# COVID 19 u Hrvatskoj: Pregled broja zaraženih po županij
                    '![](img/', last_date_, '_map.png)\n\n',
                    '## Kretanje broja COVID-19 slučajeva, hospitalizacija i umrlih\n\n(napomena: podaci o hospitalizacijama i broju osoba na respiratorima se ne objavljuju svakodnevno, prikazani su zadnji dostupni podaci)\n\n',
                    '![](img/', last_date_, '_cases_hospitalisations_deaths.png)\n\n',
+                   '![](img/', last_date_, '_cases_hospitalisations_deaths_log.png)\n\n',
                    
                    '## Kretanje udjela pozitivnih testova\n\n(zadnji dostupni podaci)\n\n',
                    '![](img/', last_date_, '_percentage_positive_tests.png)\n\n',
                    
                    '## Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama\n\n',
                    '![](img/', last_date_, '_cases_per_age_group_lines.png)\n\n',
+                   '![](img/', last_date_, '_cases_per_age_group_lines_log.png)\n\n',
                    
                    '## Animirani prikaz kretanja broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama\n\n',
                    '![](img/', last_date_, 'anim_aug_1200.gif)\n\n',
