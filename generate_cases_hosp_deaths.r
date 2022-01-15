@@ -82,16 +82,16 @@ ggsave(paste('img/', last_date_, '_percentage_positive_tests.png', sep = ''),
 
 
 g3 <- ggplot() + 
-  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/4081657"), colour="blue", alpha=0.2) + 
+  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/3888529"), colour="blue", alpha=0.2) + 
 
-  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/population"), colour="red", alpha=0.2) +
+  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/3888529"), colour="red", alpha=0.2) +
   geom_point(data=merged_data, aes_string(x='date', y="new_on_respirator"), colour="darkolivegreen4", alpha=0.2) +
   
   geom_point(data=merged_data, aes_string(x='date', y="new_deaths"), colour="black", alpha=0.2) +
   geom_line(data=merged_data, aes_string(x='date', y="new_deaths_7da"), colour="black", size=1.5, alpha=0.7) +
-  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/population"), colour='red', size=1.5, alpha=0.7) +
+  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/3888529"), colour='red', size=1.5, alpha=0.7) +
   geom_line(data=merged_data, aes_string(x='date', y="new_on_respirator_7da"), colour='darkolivegreen4', size=1.5, alpha=0.7) +
-  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/4081657"), colour='blue', size=1.5, alpha=0.7) +
+  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/3888529"), colour='blue', size=1.5, alpha=0.7) +
   
   ylab('Broj novih slučajeva na 100k stanovnika (plavo)\nBroj novih hospitalizacija na 1M stanovnika (crveno)\nBroj novih osoba na respiratoru (zeleno)\nBroj umrlih (crno)') +
   xlab('Datum') + 
@@ -99,7 +99,7 @@ g3 <- ggplot() +
   scale_x_date(labels = date_format("%b %Y."), date_breaks = "1 month") +
   theme_minimal() +
   theme(text = element_text(size=18)) +
-  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
+  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Korištena populacija HR: 3888529. Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 g3
 
