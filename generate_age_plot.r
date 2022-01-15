@@ -132,14 +132,14 @@ for(county in c(sort(counties$Zupanija), 'Hrvatska')) {
   
   colnames(d)[2:3] <- c('Dobna_skupina', 'Broj_zadnjih_7_data')
   
-  my_breaks <-c(0, 50, 100, 200, 400, 800, 1600)
-  my_labels <-c('0', '50', '100', '200', '400', '800', '1600+')
+  my_breaks <-c(0, 50, 100, 200, 400, 800, 1600, 3200)
+  my_labels <-c('0', '50', '100', '200', '400', '800', '1600', '3200+')
   
   p[[i]] <- ggplot(d, aes_string('Datum', colnames(d)[2], fill='Broj_zadnjih_7_data')) + 
     geom_tile() +
     ylab("Dobna skupina") +
     scale_fill_distiller(palette="Spectral", oob = scales::squish, name='Ukupno\nu 7 dana\nna 100000\nstanovnika',
-                         limits = c(0, 1600), labels=my_labels, breaks=my_breaks) +
+                         limits = c(0, 3200), labels=my_labels, breaks=my_breaks) +
     theme_minimal()
   
   p[[i]] <- ggplotly(p[[i]])
