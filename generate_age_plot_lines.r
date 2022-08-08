@@ -227,7 +227,7 @@ p <- ggplot() +
   theme_minimal() +
   theme(legend.position="right") +
   ylab('Broj slučajeva na 100k stanovnika') +
-  labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. -', last_date, ')', sep='')) +
+  labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. - ', last_date, ')', sep='')) +
   theme(text = element_text(size=18)) +
   labs(caption = paste('Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2021.). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
@@ -319,7 +319,7 @@ p <- ggplot() +
   theme(legend.position="right") +
   ylab('Broj slučajeva na 100k stanovnika') +
   scale_y_continuous(trans='pseudo_log', breaks = c(0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096)) +
-  labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. -', last_date, ') (logaritamska skala)', sep='')) +
+  labs(title = paste('Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (02.03.2020. - ', last_date, ') (logaritamska skala)', sep='')) +
   theme(text = element_text(size=18)) +
   labs(caption = paste('Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2021.). Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))

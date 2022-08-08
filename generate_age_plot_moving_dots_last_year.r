@@ -231,6 +231,5 @@ for (k in seq(40)) {
   
 }
 
-Sys.setenv(PATH=paste(Sys.getenv("PATH"), "/home/pero/.cargo/bin/", sep=":")) # anim_cases_11_15_2021_vs_2020
 system(paste("cd img/anim_dots_2 && gifski -o anim_aug_1200.gif anim*.png --width 1200 --fps 8 && cp anim_aug_1200.gif ../anim_cases_", last_date_, "_vs_2020.gif", sep=""))
 

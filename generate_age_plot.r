@@ -20,6 +20,7 @@ library(tidyr)
 library(lubridate)
 
 library(reshape2)
+library(reticulate)
 
 Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
 
@@ -181,7 +182,7 @@ s <- subplot(p, nrows = 5, margin=c(0.02,0.02,0.02,0.02), titleY = TRUE) %>%
 
 s
 
-orca(s, file = paste('img/', last_date_, '_per_age_group.png', sep = ''), width = 27 * 72, height = 13 * 72)
+save_image(s, file = paste('img/', last_date_, '_per_age_group.png', sep = ''), width = 27 * 72, height = 13 * 72)
 
 
 saveWidget(s, file = "html/index_per_age.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po dobnim skupinama (", last_date, ")", sep=""))

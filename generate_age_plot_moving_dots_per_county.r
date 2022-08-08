@@ -19,6 +19,7 @@ library(dplyr)
 library(tidyr)
 library(tidyverse)
 library(reshape2)
+library(reticulate)
 
 Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
 
@@ -200,17 +201,17 @@ for (j in seq(0, difftime(Sys.Date() - 3, as.Date('2022-08-01'), units = c("days
                     align='left',
                     ax = 0,
                     ay = 0)
-  
-  orca(s, file = paste('img/anim_dots_counties/anim_', str_pad(j, 6, pad = "0"), sep = '', '.png'), width = 27 * 72, height = 13 * 72)
+ 
+  save_image(s, file = paste('img/anim_dots_counties/anim_', str_pad(j, 6, pad = "0"), sep = '', '.png'), width = 27 * 72, height = 13 * 72)
   
   
 }
 
 # last frame for page
-orca(s, file = paste('img/', last_date_, 'all_counties_dots.png', sep = ''), width = 27 * 72, height = 13 * 72)
+save_image(s, file = paste('img/', last_date_, 'all_counties_dots.png', sep = ''), width = 27 * 72, height = 13 * 72)
+
 
 
 # generate gif
-Sys.setenv(PATH=paste(Sys.getenv("PATH"), "/home/pero/.cargo/bin/", sep=":"))
 system(paste("cd img/anim_dots_counties && gifski -o anim_all_1920.gif anim*.png --width 1920 --fps 8")) # && cp anim_aug_1200.gif img/", last_date_, "anim_aug_1200.gif", sep=""))
 

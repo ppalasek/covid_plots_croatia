@@ -20,6 +20,7 @@ library(tidyr)
 library(lubridate)
 
 library(reshape2)
+library(reticulate)
 
 library("viridis")
 library("RColorBrewer")
@@ -190,5 +191,5 @@ for(style in c(0, 1)) {
   
   s
   
-  orca(s, file = paste('img/', last_date_, '_per_age_group_all_', style, '.png', sep = ''), width = 27 * 72, height = 13 * 72)
+  save_image(s, file = paste('img/', last_date_, '_per_age_group_all_', style, '.png', sep = ''), width = 27 * 72, height = 13 * 72)
 }
