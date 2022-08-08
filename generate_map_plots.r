@@ -136,7 +136,7 @@ hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Tjedna r
 
 hr_map
 
-ggsave(paste('img/', last_date_, '_map.png', sep = ''), plot = hr_map, dpi=300, width=309.80, height=215.90, units="mm")
+ggsave(paste('img/', last_date_, '_map.png', sep = ''), plot = hr_map, dpi=300, width=309.80, height=215.90, units="mm", bg='#ffffff')
 
 my_breaks <-c(0,  100, 200, 400, 800, 1600)
 my_labels <-c('0', '100', '200', '400', '800', '1600+')
@@ -156,7 +156,7 @@ hr_map7 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno 
 
 hr_map7
 
-ggsave(paste('img/', last_date_, '_map_7_day_per_100k.png', sep = ''), plot = hr_map7, dpi=300, width=309.80, height=215.90, units="mm")
+ggsave(paste('img/', last_date_, '_map_7_day_per_100k.png', sep = ''), plot = hr_map7, dpi=300, width=309.80, height=215.90, units="mm", bg='#ffffff')
 
 my_breaks <-c(0, 200, 400, 800, 1600, 3200)
 my_labels <-c('0',  '200', '400', '800', '1600', '3200+')
@@ -176,7 +176,7 @@ hr_map14 <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Ukupno
 
 hr_map14
 
-ggsave(paste('img/', last_date_, '_map_14_day_per_100k.png', sep = ''), plot = hr_map14, dpi=300, width=309.80, height=215.90, units="mm")
+ggsave(paste('img/', last_date_, '_map_14_day_per_100k.png', sep = ''), plot = hr_map14, dpi=300, width=309.80, height=215.90, units="mm", bg='#ffffff')
 
 hr_map <- ggplotly(hr_map, tooltip = c("text"))
 

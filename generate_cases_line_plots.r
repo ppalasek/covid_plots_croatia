@@ -4,7 +4,7 @@ library(plotly)
 library(htmlwidgets)
 library(readr)
 library(jsonlite)
-
+library(reticulate)
 
 library(grid)
 
@@ -128,7 +128,10 @@ for(use_log_scale in c(FALSE, TRUE)) {
   else {
     saveWidget(s, file = "html/index.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama (", last_date, ")", sep=""))
     
-    
-    orca(s, file = paste('img/', last_date_, '_line_plots.png', sep = ''), width = 27 * 72, height = 13 * 72)
+
+    save_image(s, file = paste('img/', last_date_, '_line_plots.png', sep = ''), width = 27 * 72, height = 13 * 72)
+
+
+
   }
 }

@@ -20,6 +20,7 @@ library(tidyr)
 library(lubridate)
 
 library(reshape2)
+library(reticulate)
 
 # get last_date_
 load('data/latest/last_date_.Rda')
@@ -188,8 +189,8 @@ s <- subplot(p, nrows = 5, margin=c(0.02), titleY = TRUE)%>%
 
 s
 
-orca(s, file = paste('img/', last_date_, '_pyramid.png', sep = ''), width = 27 * 72, height = 13 * 72)
 
+save_image(s, file = paste('img/', last_date_, '_pyramid.png', sep = ''), width = 27 * 72, height = 13 * 72)
 
 saveWidget(s, file = "html/index_pyramid.html", title = paste("COVID 19 u Hrvatskoj: Pregled broja zaraženih po dobnim skupinama i spolu (", last_date, ")", sep=""))
 

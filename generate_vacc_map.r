@@ -61,7 +61,7 @@ hr_map <- ggplot(hr, aes(text = paste("Županija: ", Zupanija, "<br>", "Prva doz
 hr_map
 
 
-ggsave(paste('img/', last_date_, '_vaccination.png', sep = ''), plot = hr_map, dpi=300, width=309.80, height=215.90, units="mm")
+ggsave(paste('img/', last_date_, '_vaccination.png', sep = ''), plot = hr_map, dpi=300, width=309.80, height=215.90, units="mm", bg="#ffffff")
 
 hr_map_p <- ggplotly(hr_map, tooltip = c("text"))
 
