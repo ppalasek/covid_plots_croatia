@@ -72,9 +72,9 @@ else:
         note = '{} bio je praznik.'.format(str_holidays[0])
         
     if len(holidays_this_week) > len(holidays_last_week):
-        note += ' Prikazane tjedne promjene broja slučajeva vjerojatno su podcijenjene.'
+        note += ' Prikazani postotak tjedne promjene vjerojatno je podcijenjen (stvarni pad je manji, tj. stvarni rast je veći).'
     elif len(holidays_this_week) < len(holidays_last_week):
-        note += ' Prikazane tjedne promjene broja slučajeva vjerojatno su precijenjene.'
+        note += ' Prikazani postotak tjedne promjene vjerojatno je precijenjen (stvarni pad je veći, tj. stvarni rast je manji).'
     else:
         note += ' Prikazane tjedne promjene broja slučajeva treba pažljivo interpretirati.'
 
