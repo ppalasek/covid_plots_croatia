@@ -3,6 +3,8 @@ library(ggplot2)
 library(plotly)
 library(htmlwidgets)
 library(readr)
+library(jsonlite)
+
 
 library(grid)
 
@@ -15,11 +17,14 @@ n <- 100
 diff_df <- read_csv('data/latest/diff_df.csv')
 
 load('data/latest/percentage_change.Rda')
-load('data/latest/cumulative_cases.Rda')
 load('data/latest/avg7_df.Rda')
 
 load('data/latest/last_date.Rda')
 load('data/latest/last_date_.Rda')
+
+holiday_note <- fromJSON('holiday_note.json')$note
+
+print(holiday_note)
 
 
 plot_df <- merge(diff_df, percentage_change, by=c("Datum"))
@@ -30,6 +35,7 @@ data_to_plot <- tail(plot_df, n=n)
 
 f <- list(size = 18, color = "black")
 f2 <- list(size = 16, color = "black")
+f_red <- list(size = 16, color = "red")
 
 for(use_log_scale in c(FALSE, TRUE)) {
   p <- list()
@@ -98,6 +104,23 @@ for(use_log_scale in c(FALSE, TRUE)) {
                     align='left',
                     ax = 0,
                     ay = 0)
+  
+  print(holiday_note)
+  
+  if (!is.null(holiday_note)) {
+    s <- s %>% add_annotations(x = 0.7,
+                    y = 0.07,
+                    text = paste('NAPOMENA: ', holiday_note ,'', sep=''),
+                    font = f_red,
+                    xref = "paper",
+                    yref = "paper",
+                    align='right',
+                    ax = 0,
+                    ay = 0)
+    
+  }
+  
+  s
   
   if (use_log_scale) {
     saveWidget(s, file = "html/index_log.html", title = "COVID 19 u Hrvatskoj: Pregled broja zaraženih po županijama")

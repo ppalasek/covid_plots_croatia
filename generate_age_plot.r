@@ -171,7 +171,7 @@ from_date <- paste(day(from_date), month(from_date), year(from_date), sep='.')
 s <- subplot(p, nrows = 5, margin=c(0.02,0.02,0.02,0.02), titleY = TRUE) %>%
   add_annotations(x = 0.7,
                   y = 0.07,
-                  text = paste('COVID 19 u Hrvatskoj: Pregled broja zaraženih po dobnim skupinama (', from_date, ' - ', last_date ,')\n\nBoje prikazuju ukupan broj zaraženih u zadnjih 7 dana, normalizirano na 100000 stanovnika u svakoj dobnoj skupini.\nSvaka županija prikazana je na istoj skali. Crvena boja označava veći broj slučajeva.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), '\nIzvor podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.)\n\nAutor: Petar Palašek', sep=''),
+                  text = paste('COVID 19 u Hrvatskoj: Pregled broja zaraženih po dobnim skupinama (', from_date, ' - ', last_date ,')\n\nBoje prikazuju ukupan broj zaraženih u zadnjih 7 dana, normalizirano na 100000 stanovnika u svakoj dobnoj skupini.\nSvaka županija prikazana je na istoj skali. Crvena boja označava veći broj slučajeva.\n\nGenerirano: ', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h'), '\nIzvor podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2021.)\n\nAutor: Petar Palašek', sep=''),
                   font = f,
                   xref = "paper",
                   yref = "paper",

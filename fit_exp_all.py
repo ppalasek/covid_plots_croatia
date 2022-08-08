@@ -19,10 +19,10 @@ def curve_model(t, a, k):
 font = {'size': 23}
 matplotlib.rc('font', **font)
 
-r2_threshold = 0.95
+r2_threshold = 0.9 # 92
 
 # num points to use for fitting 
-n_for_fitting = 7# 7
+n_for_fitting =  7
 
 # num future points
 n_fut = 7
@@ -113,7 +113,7 @@ for region in all_vals[0].keys():
     x_for_fit = np.asarray(list(range(n_for_fitting)))
     y_for_fit = y[-n_for_fitting:]
 
-    p_opt, p_cov = curve_fit(curve_model, x_for_fit, y_for_fit, bounds=([0, -0.9], [3000, 0.9]), maxfev=10000)
+    p_opt, p_cov = curve_fit(curve_model, x_for_fit, y_for_fit, bounds=([0, -0.9], [4000, 0.9]), maxfev=10000)
     
     print('params:', p_opt)
 

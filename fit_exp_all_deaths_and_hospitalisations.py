@@ -20,10 +20,10 @@ font = {'size': 35}
 matplotlib.rc('font', **font)
 
 
-r2_threshold = 0.95
+r2_threshold = 0.9
 
 # num points to use for fitting 
-n_for_fitting = 7# 7
+n_for_fitting = 7
 
 # num future points
 n_fut = 7 #7
@@ -124,7 +124,7 @@ print(n_to_plot - diff_dates.days)
 for i in range(n_to_plot - diff_dates.days):
     patients_14_d = sum(hosp_patients[i : i + n_days])
 
-    patients_14_d = patients_14_d / 4058165 * 1000000
+    patients_14_d = patients_14_d / 3888529 * 1000000
 
     curr_date = datetime.datetime.strptime(dates[i], "%d/%m/%Y").date()
 
@@ -227,9 +227,9 @@ for region in all_vals['cases'][0].keys():
 
 
         if modality == 'hospitalisations':
-            p_opt[modality], p_cov[modality] = curve_fit(curve_model, x_for_fit[modality], y_for_fit[modality], bounds=([0, -0.9], [2000, 0.9]), maxfev=10000)
+            p_opt[modality], p_cov[modality] = curve_fit(curve_model, x_for_fit[modality], y_for_fit[modality], bounds=([0, -0.9], [4000, 0.9]), maxfev=10000)
         else:
-            p_opt[modality], p_cov[modality] = curve_fit(curve_model, x_for_fit[modality], y_for_fit[modality], bounds=([0, -0.9], [2000, 0.9]), maxfev=10000)
+            p_opt[modality], p_cov[modality] = curve_fit(curve_model, x_for_fit[modality], y_for_fit[modality], bounds=([0, -0.9], [4000, 0.9]), maxfev=10000)
 
         print('params:', p_opt[modality])
 

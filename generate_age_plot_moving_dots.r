@@ -27,6 +27,8 @@ Sys.Date()
 library("scales")                                   
 Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
 
+system(paste("rm img/anim_dots/*.png"))
+
 # get last_date_
 load('data/latest/last_date_.Rda')
 
@@ -68,7 +70,7 @@ labels <- paste0(seq(0, 85, by=step), '-', seq(step - 1, 85, by=step), sep='')
 labels[length(labels)] = '85+'
 
 
-counties <- unique(json_data[c("Zupanija")])
+# counties <- unique(json_data[c("Zupanija")])
 
 
 f <- list(size = 13, color = "black")
@@ -128,9 +130,34 @@ d
 
 library(tidyverse)
 
-for (j in seq(0, difftime(Sys.Date() - 3, as.Date('2021-08-01'), units = c("days")))) {
+start_date <- Sys.Date() - 3 - 60
+
+max_val <- 200
+
+for (j in seq(0, difftime((Sys.Date() - 3), start_date, units = c("days")))) { #} as.Date('2021-08-01'), units = c("days")))) {
   print(j)
-  current_date <- as.Date('2021-08-01') + days(j)
+  current_date <- start_date + days(j)
+  
+  prev_date  = as.Date(current_date) - days(6)
+  
+  current_day <- data_to_plot[data_to_plot$Datum <= current_date & data_to_plot$Datum >= prev_date, ]
+  
+  cd <- melt(current_day, id.vars="Datum")
+  
+  max_val <- max(max_val, max(cd$value))
+  
+}
+
+print(max_val)
+print(max_val * 1.2)
+max_val <- round(max_val * 1.2)
+
+print(max_val)
+
+
+for (j in seq(0, difftime((Sys.Date() - 3), start_date, units = c("days")))) { #} as.Date('2021-08-01'), units = c("days")))) {
+  print(j)
+  current_date <- start_date + days(j)
   
   prev_date  = as.Date(current_date) - days(6)
   
@@ -143,10 +170,10 @@ for (j in seq(0, difftime(Sys.Date() - 3, as.Date('2021-08-01'), units = c("days
     geom_point(data=cd[cd$Datum==max(cd$Datum), ], aes(x=variable, y=value), size=2) +
     ylab('Broj slučajeva na 100k stanovnika (ukupno u 7 dana)') +
     xlab('Dobna skupina') +
-    ylim(0, 2500) +
+    ylim(0, max_val) +
     labs(title = 'Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj',
          subtitle=paste(format(as.Date(current_date), "%d.%m.%Y."), 'Crna točka: broj slučajeva u 7 dana do prikazanog datuma, sive točke: sedmodnevni broj slučajeva za 6 dana ranije.'),
-         caption = 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Autor: Petar Palašek. Inspirirano animacijom: @ProfColinDavis') +
+         caption = 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2021.). Autor: Petar Palašek. Inspirirano animacijom: @ProfColinDavis') +
     theme_minimal()
   p
   

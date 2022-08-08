@@ -26,8 +26,8 @@ library(readr)
 load('data/latest/last_date_.Rda')
 
 #https://www.hzjz.hr/aktualnosti/covid-19-izvjesce-hzjz-a/
-vacc_data <- read.csv(file = 'data/vaccination/cro_vaccination_per_county_2021_12_26.csv')
-vacc_date <- "26.12.2021."
+vacc_data <- read.csv(file = 'data/vaccination/cro_vaccination_per_county_2022_05_15.csv')
+vacc_date <- "15.05.2022."
 
 first_dose_reordered <- as.numeric(vacc_data[1, 2:22])
 fully_vacc_reordered <- as.numeric(vacc_data[2, 2:22])

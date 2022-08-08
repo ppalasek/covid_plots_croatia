@@ -2,9 +2,12 @@ library(jsonlite)
 library(readr)
 library(zoo) 
 
-json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
+# saved by the python script
+json_data <- fromJSON('data/latest/last_data_po_danima_zupanijama.json')
 
-write(toJSON(json_data), 'data/latest/last_data_po_danima_zupanijama.json')
+# json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_danima_zupanijama')
+
+# write(toJSON(json_data), 'data/latest/last_data_po_danima_zupanijama.json')
 write(toJSON(json_data), paste('data/per_day/po_danima_zupanijama_', format(Sys.time(), '%Y_%m_%d'), '.json', sep=''))
 
 json_data <- json_data[, c("Datum", "PodaciDetaljno")]
@@ -137,3 +140,31 @@ save(last_date_, file='data/latest/last_date_.Rda')
 # get age data
 json_data <- fromJSON('https://www.koronavirus.hr/json/?action=po_osobama')
 write(toJSON(json_data), 'data/latest/last_data_po_osobama.json')
+
+
+# deaths
+
+avg7_df_deaths <- as.data.frame(rollapply(diff_deaths_df[, 1:ncol(diff_df) - 1], 7, mean, fill=NA, align="right"))
+
+avg7_df_deaths_lag <- rbind(NA, head(avg7_df_deaths, -7))
+
+percentage_change_deaths = (tail(avg7_df_deaths, n=nrow(avg7_df_deaths_lag)) / avg7_df_deaths_lag - 1) * 100
+
+# sum_14_df = (tail(avg7_df_deaths, n=nrow(avg7_df_deaths_lag)) + avg7_df_deaths_lag) * 7
+sum_7_df_deaths = tail(avg7_df_deaths, n=nrow(avg7_df_deaths_lag)) * 7
+# 
+# colnames(sum_14_df) <- paste("ukupno_14d", colnames(percentage_change_deaths), sep = "_")
+colnames(sum_7_df_deaths) <- paste("ukupno_7d", colnames(percentage_change_deaths), sep = "_")
+
+sum_7_df_deaths$Datum <- cumulative_deaths$Datum[c(8:nrow(cumulative_deaths) - 1)]
+
+colnames(percentage_change_deaths) <- paste("tjedna_razlika", colnames(percentage_change_deaths), sep = "_")
+
+percentage_change_deaths$Datum <- cumulative_deaths$Datum[c(8:nrow(cumulative_deaths) - 1)]
+
+save(percentage_change_deaths, file='data/latest/percentage_change_deaths.Rda')
+save(cumulative_deaths, file='data/latest/cumulative_deaths.Rda')
+save(avg7_df_deaths, file='data/latest/avg7_df_deaths.Rda')
+save(sum_7_df_deaths, file='data/latest/sum_7_df_deaths.Rda')
+
+

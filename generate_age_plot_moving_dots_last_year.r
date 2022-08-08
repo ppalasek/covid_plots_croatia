@@ -64,7 +64,7 @@ labels <- paste0(seq(0, 85, by=step), '-', seq(step - 1, 85, by=step), sep='')
 labels[length(labels)] = '85+'
 
 
-counties <- unique(json_data[c("Zupanija")])
+#counties <- unique(json_data[c("Zupanija")])
 
 
 f <- list(size = 13, color = "black")
@@ -124,9 +124,55 @@ d
 
 library(tidyverse)
 
-for (j in seq(0, difftime(Sys.Date() + days(30), as.Date('2021-08-01'), units = c("days")))) {
+system(paste("rm img/anim_dots_2/*.png"))
+
+
+start_date <- Sys.Date() - 3 - 60
+
+max_val <- 200
+
+for (j in seq(0, difftime((Sys.Date() - 3), start_date, units = c("days")))) { #} as.Date('2021-08-01'), units = c("days")))) {
   print(j)
-  current_date <- as.Date('2021-08-01') + days(j)
+  current_date <- start_date + days(j)
+  
+  prev_date  = as.Date(current_date) - days(6)
+  
+  current_day <- data_to_plot[data_to_plot$Datum <= current_date & data_to_plot$Datum >= prev_date, ]
+  
+  cd <- melt(current_day, id.vars="Datum")
+  
+  
+  ly_current_date <- start_date + days(j) - days(365) 
+  
+  ly_prev_date  = as.Date(ly_current_date) - days(6)
+  
+  ly_current_day <- data_to_plot[data_to_plot$Datum <= ly_current_date & data_to_plot$Datum >= ly_prev_date, ]
+  
+  ly_cd <- melt(ly_current_day, id.vars="Datum")
+  
+  
+  max_val <- max(max_val, max(cd$value))
+  max_val <- max(max_val, max(ly_cd$value))
+  
+}
+
+print(max_val)
+print(max_val * 1.2)
+max_val <- round(max_val * 1.2)
+
+print(max_val)
+
+
+
+
+
+
+
+
+
+for (j in seq(0, difftime((Sys.Date() - 3), start_date, units = c("days"))))  { # } units = c("days")))) {
+  print(j)
+  current_date <- start_date + days(j)
   
   if (current_date > Sys.Date() - days(3)) {
     current_date <- Sys.Date() - days(3)
@@ -138,7 +184,7 @@ for (j in seq(0, difftime(Sys.Date() + days(30), as.Date('2021-08-01'), units = 
   
   cd <- melt(current_day, id.vars="Datum")
   
-  ly_current_date <- as.Date('2021-08-01') + days(j) - days(365) 
+  ly_current_date <- start_date + days(j) - days(365) 
   
   ly_prev_date  = as.Date(ly_current_date) - days(6)
   
@@ -164,10 +210,10 @@ for (j in seq(0, difftime(Sys.Date() + days(30), as.Date('2021-08-01'), units = 
   p <- points +
     ylab('Broj slučajeva na 100k stanovnika (ukupno u 7 dana)') +
     xlab('Dobna skupina') +
-    ylim(0, 2500) +
+    ylim(0, max_val) +
     labs(title = 'Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj',
          subtitle=title,
-         caption = 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2019.). Autor: Petar Palašek. Inspirirano animacijom: @ProfColinDavis') +
+         caption = 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2021.). Autor: Petar Palašek. Inspirirano animacijom: @ProfColinDavis') +
     theme_minimal()
   p
   
