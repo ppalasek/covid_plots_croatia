@@ -81,7 +81,7 @@ print('Waiting for num tested and num positive...')
 found = False
 
 while not found:
-    query = '("novih slučajeva" OR "ukupno testirano") from:koronavirus_hr'
+    query = '("slučaj" OR "ukupno testirano") from:koronavirus_hr'
 
     tweets = client.search_recent_tweets(query=query, tweet_fields=['created_at'], max_results=10)
 
@@ -125,7 +125,7 @@ while not found:
 
             num_tested.append((tweet.created_at.date() - timedelta(days=1), int(testirano_24h)))
 
-        m = re.search("zabilježeno je (\d+[\.\,]*\d*[^\d]+)novih slučajeva", tweet.text)
+        m = re.search("zabilježen.* je (\d+[\.\,]*\d*[^\d]+)novi.* slučaj", tweet.text)
 
         if m:
             pozitivnih_24h = m.groups()[0].replace('.', '').replace(',', '')
@@ -161,7 +161,6 @@ while not found:
     
     # we need both tweets
     found = a and b
-    
     if not found:
         print('waiting 1 min')
         time.sleep(60)
@@ -225,13 +224,15 @@ api = tweepy.API(auth)
 
 last_date_ = last_date_dt.strftime('%Y_%m_%d')
 
-percentages_img_path = 'img/{}_percentage_positive_tests.png'.format(last_date_)
+percentages_img_path = 'img/*_percentage_positive_tests*.png'.format(last_date_)
+percentages_stacked_img_path = 'img/percentages_stacked.png'
 
 print(percentages_img_path)
 
+subprocess.call('convert -append {} {}'.format(percentages_img_path, percentages_stacked_img_path), shell=True)
 
 
-media = api.media_upload(filename=percentages_img_path)
+media = api.media_upload(filename=percentages_stacked_img_path)
 print("MEDIA: ", media)
 
 tweet = api.update_status(status=text, media_ids= [media.media_id_string])
