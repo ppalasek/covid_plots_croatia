@@ -38,18 +38,17 @@ printer = MyListener(bearer_token)
 
 
 
+# print(printer.get_rules())
+# printer.delete_rules(1552562663024214017)
+# printer.delete_rules(1560160651464609793)
+
+
+printer.add_rules(tweepy.StreamRule('("slučaj" OR "slučajeva" OR "ukupno testirano" OR "preminulo") from:koronavirus_hr'))
+
 print(printer.get_rules())
 
 
-
-
-printer.add_rules(tweepy.StreamRule('("novih slučajeva" OR "ukupno testirano" OR "preminulo") from:koronavirus_hr'))
-
-# print(printer.get_rules())
-
-# assert 0
-
-printer.filter()
+#printer.filter()
 
 print('RUN!')
 
@@ -58,7 +57,8 @@ client = tweepy.Client(bearer_token=bearer_token,
                        consumer_key=api_key,
                        consumer_secret=api_key_secret,
                        access_token=access_token,
-                       access_token_secret=access_token_secret)
+                       access_token_secret=access_token_secret,
+                       wait_on_rate_limit=True)
 
 
 print(datetime.now().date())
@@ -81,7 +81,7 @@ print('Waiting for num tested and num positive...')
 found = False
 
 while not found:
-    query = '("slučaj" OR "ukupno testirano") from:koronavirus_hr'
+    query = '("slučajeva" OR "slučaj" OR "ukupno testirano") from:koronavirus_hr'
 
     tweets = client.search_recent_tweets(query=query, tweet_fields=['created_at'], max_results=10)
 
@@ -108,29 +108,29 @@ while not found:
         if not i_liked:
             client.like(tweet_id=tweet.id)
 
-#         print(i, tweet.created_at)
+        print(i, tweet.created_at)
 
-#         print(tweet.created_at.date())
+        print(tweet.created_at.date())
 
-#         print('"{}"'.format(tweet.text))
-#         print('-' * 50)
+        print('"{}"'.format(tweet.text))
+        print('-' * 50)
 
         m = re.search("testirano.*od toga (\d+[\.\,]*\d*[^\d]+)u posljednja", tweet.text)
 
         if m:
             testirano_24h = m.groups()[0].replace('.', '').replace(',', '')
 
-#             print('>>>', tweet.created_at, 'testirano:', int(testirano_24h))
-#             print('-' * 50)
+            print('>>>', tweet.created_at, 'testirano:', int(testirano_24h))
+            print('-' * 50)
 
             num_tested.append((tweet.created_at.date() - timedelta(days=1), int(testirano_24h)))
 
-        m = re.search("zabilježen.* je (\d+[\.\,]*\d*[^\d]+)novi.* slučaj", tweet.text)
+        m = re.search("zabilježen.*je (\d+[\.\,]*\d*[^\d]+)novi.* slučaj", tweet.text)
 
         if m:
             pozitivnih_24h = m.groups()[0].replace('.', '').replace(',', '')
-#             print('>>>', tweet.created_at, 'pozitivnih:', int(pozitivnih_24h))
-#             print('-' * 50)
+            print('>>>', tweet.created_at, 'pozitivnih:', int(pozitivnih_24h))
+            print('-' * 50)
 
             num_positive.append((tweet.created_at.date() - timedelta(days=1), int(pozitivnih_24h)))
 
@@ -139,8 +139,8 @@ while not found:
 
         if m:
             preminulo_24h = m.groups()[0].replace('.', '').replace(',', '')
-            # print('>>>', tweet.created_at, 'pozitivnih:', int(pozitivnih_24h))
-            # print('-' * 50)
+            print('>>>', tweet.created_at, 'pozitivnih:', int(pozitivnih_24h))
+            print('-' * 50)
 
             num_deaths.append((tweet.created_at.date() - timedelta(days=1), int(preminulo_24h)))
 
@@ -158,7 +158,15 @@ while not found:
 
     a = num_tested[-1][0] == last_date_dt + timedelta(days=1)
     b = num_positive[-1][0] == last_date_dt + timedelta(days=1)
-    
+
+    print(num_tested)
+    print('pos')
+    print(num_positive)
+    print('deaths')
+    print(num_deaths)
+
+    print('a', a)
+    print('b', b)
     # we need both tweets
     found = a and b
     if not found:
@@ -173,7 +181,6 @@ while not found:
 print(num_tested)
 print(num_positive)
 print(num_deaths)
-
 
 data_to_check = {'deaths' : num_deaths[-1][1]}
 
