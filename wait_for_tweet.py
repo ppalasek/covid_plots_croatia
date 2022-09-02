@@ -41,7 +41,7 @@ printer = MyListener(bearer_token)
 # print(printer.get_rules())
 # printer.delete_rules(1552562663024214017)
 # printer.delete_rules(1560160651464609793)
-printer.delete_rules(1560295800479137797)
+# printer.delete_rules(1560295800479137797)
 
 
 printer.add_rules(tweepy.StreamRule('("slučaj" OR "slučaja" OR "slučajeva" OR "ukupno testirano" OR "preminulo") from:koronavirus_hr'))
@@ -51,7 +51,7 @@ print(printer.get_rules())
 
 
 
-# printer.filter()
+printer.filter()
 
 print('RUN!')
 
