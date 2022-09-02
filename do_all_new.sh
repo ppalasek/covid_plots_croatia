@@ -27,8 +27,10 @@ echo "generate death area plot"
 Rscript generate_death_area_plot.r
 
 #read -n 1 -p "Continue? (ctrl+c to stop)"
+convert -append img/*_deaths_shaded.png img/*_deaths_shaded_log.png img/deaths_stacked.png
+#python publish_tweet.py 'img/deaths_stacked.png' 'Kretanje broja umrlih u Hrvatskoj (sedmodnevni prosjek, linearna/logaritamska skala).'
 
-python publish_tweet.py 'img/{}_deaths_shaded.png' 'Kretanje broja umrlih u Hrvatskoj (sedmodnevni prosjek).'
+python publish_tweet.py 'img/deaths_stacked.png' 'Kretanje broja umrlih u Hrvatskoj (sedmodnevni prosjek, linearna/logaritamska skala). Broj umrlih u zadnjih 24 sata: [DEATHS_24H], u zadnjih 7 dana: [DEATHS_7D], u zadnjih 30 dana: [DEATHS_30D], ukupno: [DEATHS_TOTAL].'
 
 echo "generate map plots"
 Rscript generate_map_plots.r
