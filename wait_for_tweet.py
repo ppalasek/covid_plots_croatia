@@ -41,14 +41,17 @@ printer = MyListener(bearer_token)
 # print(printer.get_rules())
 # printer.delete_rules(1552562663024214017)
 # printer.delete_rules(1560160651464609793)
+printer.delete_rules(1560295800479137797)
 
 
-printer.add_rules(tweepy.StreamRule('("slučaj" OR "slučajeva" OR "ukupno testirano" OR "preminulo") from:koronavirus_hr'))
+printer.add_rules(tweepy.StreamRule('("slučaj" OR "slučaja" OR "slučajeva" OR "ukupno testirano" OR "preminulo") from:koronavirus_hr'))
 
 print(printer.get_rules())
 
 
-#printer.filter()
+
+
+# printer.filter()
 
 print('RUN!')
 
@@ -81,7 +84,7 @@ print('Waiting for num tested and num positive...')
 found = False
 
 while not found:
-    query = '("slučajeva" OR "slučaj" OR "ukupno testirano") from:koronavirus_hr'
+    query = '("slučajeva" OR "slučaj" OR "slučaja" OR "ukupno testirano") from:koronavirus_hr'
 
     tweets = client.search_recent_tweets(query=query, tweet_fields=['created_at'], max_results=10)
 
@@ -125,7 +128,7 @@ while not found:
 
             num_tested.append((tweet.created_at.date() - timedelta(days=1), int(testirano_24h)))
 
-        m = re.search("zabilježen.*je (\d+[\.\,]*\d*[^\d]+)novi.* slučaj", tweet.text)
+        m = re.search("zabilježen.* (\d+[\.\,]*\d*[^\d]+)nov.* slučaj", tweet.text)
 
         if m:
             pozitivnih_24h = m.groups()[0].replace('.', '').replace(',', '')
@@ -135,7 +138,7 @@ while not found:
             num_positive.append((tweet.created_at.date() - timedelta(days=1), int(pozitivnih_24h)))
 
 
-        m = re.search("reminulo je\s+(\d+)\s+osoba", tweet.text)
+        m = re.search("reminul.*\s+(\d+)\s+osob", tweet.text)
 
         if m:
             preminulo_24h = m.groups()[0].replace('.', '').replace(',', '')
