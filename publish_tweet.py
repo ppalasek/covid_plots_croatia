@@ -48,12 +48,28 @@ holiday_note = ''
 if Path('holiday_note.json').exists():
     with open('holiday_note.json', 'r') as f:
         holiday_note = json.load(f)['note']
-
+        
+        holiday_note = 'Napomena: {}'.format(holiday_note)
 
     if holiday_note is None:
         holiday_note = ''
 
-text = text.replace('[HOLIDAY_NOTE]', 'Napomena: {}'.format(holiday_note))
+
+if Path('deaths_summary.json').exists():
+    with open('deaths_summary.json', 'r') as f:
+        deaths_summary = json.load(f)[0]
+
+else:
+    deaths_summary = {'deaths_24h' : '', 'deaths_7d' : '', 'deaths_30d' : '', 'deaths_total' : ''}
+
+print(deaths_summary)
+
+text = text.replace('[HOLIDAY_NOTE]', '{}'.format(holiday_note))
+
+text = text.replace('[DEATHS_24H]', str(deaths_summary['deaths_24h']))
+text = text.replace('[DEATHS_7D]', str(deaths_summary['deaths_7d']))
+text = text.replace('[DEATHS_30D]', str(deaths_summary['deaths_30d']))
+text = text.replace('[DEATHS_TOTAL]', str(deaths_summary['deaths_total']))
 
 
 bearer_token = twitter_keys['bearer_token']
