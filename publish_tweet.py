@@ -48,12 +48,11 @@ holiday_note = ''
 if Path('holiday_note.json').exists():
     with open('holiday_note.json', 'r') as f:
         holiday_note = json.load(f)['note']
-        
-        holiday_note = 'Napomena: {}'.format(holiday_note)
-
+    
     if holiday_note is None:
         holiday_note = ''
-
+    else: 
+        holiday_note = 'Napomena: {}'.format(holiday_note)
 
 if Path('deaths_summary.json').exists():
     with open('deaths_summary.json', 'r') as f:
