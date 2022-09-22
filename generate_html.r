@@ -19,6 +19,8 @@ md_source <- paste('# COVID 19 u Hrvatskoj: Pregled broja zaraženih po županij
                    '#### NAPOMENA (24.01.2022.): Promijenjene su skale na nekim grafovima kako bi bili informativniji.\n\n',
                    '#### NAPOMENA (07.03.2022.): Od danas se koriste podaci iz popisa stanovništva 2021. u svim prikazima.\n\n',
                    '#### NAPOMENA (12.03.2022.): Zbog nedostupnosti detaljnih podataka o individualnim slučajevima na koronavirus.hr neke grafove nemoguće je generirati. Bit će ispravljeno kad i ako ti podaci ponovno budu dostupni.\n\n',
+                   '#### NAPOMENA (22.09.2022.): Od danas se koriste konačni podaci iz popisa stanovništva 2021. u svim prikazima (ukupan broj stanovnika 3871833).\n\n',
+		   'Neki od prikaza dostupni su i na https://twitter.com/CroatiaCovid odmah nakon generiranja.\n\n',
                    'Interaktivni prikazi dostupni su na sljedećim linkovima:\n\n',
                    '- [Standardni prikaz](html/index.html) (zadnjih 100 dana)\n',
                    '- [Prikaz na logaritamskoj skali](html/index_log.html) (zadnjih 100 dana)\n',

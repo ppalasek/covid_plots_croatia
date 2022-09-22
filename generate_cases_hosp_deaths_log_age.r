@@ -13,6 +13,7 @@ Sys.setlocale("LC_TIME", "hr_HR.UTF-8")
 data <- read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv')  %>%
   filter(location %in% "Croatia")
 
+
 data$date <- as.Date(data$date, format="%Y-%m-%d")
 
 # read latest data we fetched from koronavirus.hr
@@ -26,10 +27,16 @@ avg7_df$date <- diff_df$date
 # get last_date_
 load('data/latest/last_date_.Rda')
 
+
 # hospitalisation data
 hospitalisation_data <- read.csv(file ='data/latest/last_hzjz_data.csv')
 
+print(hospitalisation_data)
+
 hospitalisation_data$date <- as.Date(hospitalisation_data$datum, format="%d/%m/%Y")
+
+
+print(max(hospitalisation_data$date))
 
 data_sorted <- data[order(data$date),]
 hospitalisation_data_sorted <- hospitalisation_data[order(hospitalisation_data$date),]
@@ -197,17 +204,17 @@ data_to_plot <- head(age_reshaped_sum7, n=nrow(age_reshaped_sum7) - 1)
 
 
 g3 <- ggplot() + 
-  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/3888529"), colour="blue", alpha=0.2) + 
+  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/3871833"), colour="blue", alpha=0.2) + 
 
-  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/3888529"), colour="red", alpha=0.2) +
+  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/3871833"), colour="red", alpha=0.2) +
   geom_point(data=merged_data, aes_string(x='date', y="new_on_respirator"), colour="darkolivegreen4", alpha=0.2) +
   
   geom_point(data=merged_data, aes_string(x='date', y="new_deaths"), colour="black", alpha=0.2) +
   geom_line(data=merged_data, aes_string(x='date', y="new_deaths_7da"), colour="black", size=1.5, alpha=0.7) +
-  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/3888529"), colour='red', size=1.5, alpha=0.7) +
+  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/3871833"), colour='red', size=1.5, alpha=0.7) +
   geom_line(data=merged_data, aes_string(x='date', y="new_on_respirator_7da"), colour='darkolivegreen4', size=1.5, alpha=0.7) +
   
-  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/3888529"), colour='blue', size=1.5, alpha=0.7) +
+  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/3871833"), colour='blue', size=1.5, alpha=0.7) +
   # #geom_line(data=data_to_plot, aes(Datum, y=`65-69`), colour='pink', size=1.5, alpha=0.7) +
   # geom_line(data=data_to_plot, aes(Datum, y=`70-74`), colour='yellow', size=1.5, alpha=0.7) +
   # geom_line(data=data_to_plot, aes(Datum, y=`75-79`), colour='orange', size=1.5, alpha=0.7) +
@@ -223,10 +230,13 @@ g3 <- ggplot() +
   scale_y_continuous(trans='pseudo_log', breaks = c(0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512)) +
   theme_minimal() +
   theme(text = element_text(size=18)) +
-  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Korištena populacija HR: 3888529. Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
+  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Korištena populacija HR: 3871833. Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 g3
 
 ggsave(paste('img/', last_date_, '_cases_hospitalisations_deaths_log_age.png', sep = ''),
        plot = g3, dpi=300, width=1600*4, height=700*4, units="px",
        bg = "white")
+
+
+print(max(merged_data$date))
