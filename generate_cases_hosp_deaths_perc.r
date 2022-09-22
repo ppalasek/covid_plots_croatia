@@ -119,9 +119,9 @@ merged_data$izvor
 
 
 g4 <- ggplot() + 
-  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/3888529"), colour="blue", alpha=0.2) + 
+  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/3871833"), colour="blue", alpha=0.2) + 
   
-  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/3888529"), colour="red", alpha=0.2) +
+  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/3871833"), colour="red", alpha=0.2) +
   geom_point(data=merged_data, aes_string(x='date', y="new_on_respirator"), colour="darkolivegreen4", alpha=0.2) +
   
   geom_point(data=merged_data, aes_string(x='date', y="new_deaths"), colour="black", alpha=0.2) +
@@ -132,9 +132,9 @@ g4 <- ggplot() +
   
   
   geom_line(data=merged_data, aes_string(x='date', y="new_deaths_7da"), colour="black", size=1.5, alpha=0.7) +
-  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/3888529"), colour='red', size=1.5, alpha=0.7) +
+  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/3871833"), colour='red', size=1.5, alpha=0.7) +
   geom_line(data=merged_data, aes_string(x='date', y="new_on_respirator_7da"), colour='darkolivegreen4', size=1.5, alpha=0.7) +
-  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/3888529"), colour='blue', size=1.5, alpha=0.7) +
+  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/3871833"), colour='blue', size=1.5, alpha=0.7) +
   
   ylab('Broj novih slučajeva na 100k stanovnika (plavo)\nBroj novih hospitalizacija na 1M stanovnika (crveno)\nBroj novih osoba na respiratoru (zeleno)\nBroj umrlih (crno)') +
   xlab('Datum') + 
@@ -142,7 +142,7 @@ g4 <- ggplot() +
   scale_x_date(labels = date_format("%b %Y."), date_breaks = "1 month") +
   theme_minimal() +
   theme(text = element_text(size=18)) +
-  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Korištena populacija HR: 3888529. Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
+  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Korištena populacija HR: 3871833. Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   # scale_y_continuous(sec.axis = sec_axis(~ . / 3, name = "Udio pozitivnih testova")) +
   scale_y_continuous(sec.axis = sec_axis(~ . / 3, name = "Udio pozitivnih testova (narančasto)", breaks = c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100), labels = scales::label_percent(accuracy = 1L, scale=1))) +
   
@@ -156,9 +156,9 @@ ggsave(paste('img/', last_date_, '_cases_hospitalisations_deaths_perc.png', sep 
 
 
 g4 <- ggplot() + 
-  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/3888529"), colour="blue", alpha=0.2) + 
+  geom_point(data=diff_df, aes_string(x='date', y="Hrvatska*100000/3871833"), colour="blue", alpha=0.2) + 
   
-  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/3888529"), colour="red", alpha=0.2) +
+  geom_point(data=merged_data, aes_string(x='date', y="new_hospitalised*1000000/3871833"), colour="red", alpha=0.2) +
   geom_point(data=merged_data, aes_string(x='date', y="new_on_respirator"), colour="darkolivegreen4", alpha=0.2) +
   
   geom_point(data=merged_data, aes_string(x='date', y="new_deaths"), colour="black", alpha=0.2) +
@@ -169,9 +169,9 @@ g4 <- ggplot() +
   
   
   geom_line(data=merged_data, aes_string(x='date', y="new_deaths_7da"), colour="black", size=1.5, alpha=0.7) +
-  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/3888529"), colour='red', size=1.5, alpha=0.7) +
+  geom_line(data=merged_data, aes_string(x='date', y="new_hospitalised_7da*1000000/3871833"), colour='red', size=1.5, alpha=0.7) +
   geom_line(data=merged_data, aes_string(x='date', y="new_on_respirator_7da"), colour='darkolivegreen4', size=1.5, alpha=0.7) +
-  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/3888529"), colour='blue', size=1.5, alpha=0.7) +
+  geom_line(data=avg7_df, aes_string(x='date', y="Hrvatska_avg7*100000/3871833"), colour='blue', size=1.5, alpha=0.7) +
   
   ylab('Broj novih slučajeva na 100k stanovnika (plavo)\nBroj novih hospitalizacija na 1M stanovnika (crveno)\nBroj novih osoba na respiratoru (zeleno)\nBroj umrlih (crno)') +
   xlab('Datum') + 
@@ -179,7 +179,7 @@ g4 <- ggplot() +
   scale_x_date(labels = date_format("%b %Y."), date_breaks = "1 month") +
   theme_minimal() +
   theme(text = element_text(size=18)) +
-  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Korištena populacija HR: 3888529. Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
+  labs(caption = paste('Izvori podataka: koronavirus.hr (slučajevi), ourworldindata.com (umrli), hzjz.hr (broj na respiratoru, hospitalizacije). Korištena populacija HR: 3871833. Generirano:', format(Sys.time() + as.difftime(1, units="hours"), '%d.%m.%Y. %H:%M:%S h.'), 'Autor: Petar Palašek, ppalasek.github.io')) +
   # scale_y_continuous(sec.axis = sec_axis(~ . / 3, name = "Udio pozitivnih testova")) +
   scale_y_continuous(trans='pseudo_log', breaks = c(0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512), sec.axis = sec_axis(~ . / 3, name = "Udio pozitivnih testova (narančasto)", breaks = c(0, 1, 2, 4, 8, 16, 32, 64, 100), labels = scales::label_percent(accuracy = 1L, scale=1))) +
   
@@ -220,9 +220,9 @@ ggsave(paste('img/', last_date_, '_cases_hospitalisations_deaths_perc_log.png', 
 # 
 # g <- ggplot() + 
 #   geom_line(data=merged_data[start:end,], aes_string(x='date', y="positive_percentage_7da*100"), colour="orange", size=1.5, alpha=0.7) +
-#   geom_line(data=merged_data[start:end,], aes_string(x='date', y="new_hospitalised_7da*1000000/3888529"), colour='red', size=1.5, alpha=0.7) +
+#   geom_line(data=merged_data[start:end,], aes_string(x='date', y="new_hospitalised_7da*1000000/3871833"), colour='red', size=1.5, alpha=0.7) +
 #   geom_line(data=merged_data[start:end,], aes_string(x='date', y="new_deaths_7da"), colour="black", size=1.5, alpha=0.7) +
-#   geom_line(data=avg7_df[(start - 25): (end - 25),], aes_string(x='date', y="Hrvatska_avg7*100000/3888529"), colour='blue', size=1.5, alpha=0.7)
+#   geom_line(data=avg7_df[(start - 25): (end - 25),], aes_string(x='date', y="Hrvatska_avg7*100000/3871833"), colour='blue', size=1.5, alpha=0.7)
 # g
 # 
 # ccf(merged_data[start:end,]$positive_percentage_7da, avg7_df[(start - 25): (end - 25),]$Hrvatska_avg7)
@@ -272,7 +272,7 @@ ggsave(paste('img/', last_date_, '_cases_hospitalisations_deaths_perc_log.png', 
 # 
 # g <- ggplot() + 
 #   geom_line(data=merged_data[start:end,], aes_string(x='date', y="positive_percentage_7da*100"), colour="orange", size=1.5, alpha=0.7) +
-#   geom_line(data=lagged_data_5[start:end,], aes_string(x='date', y="new_hospitalised_7da*1000000/3888529"), colour='red', size=1.5, alpha=0.7) +
+#   geom_line(data=lagged_data_5[start:end,], aes_string(x='date', y="new_hospitalised_7da*1000000/3871833"), colour='red', size=1.5, alpha=0.7) +
 #   geom_line(data=lagged_data_5[start:end,], aes_string(x='date', y="new_deaths_7da"), colour="black", size=1.5, alpha=0.7) +
-#   geom_line(data=avg7_df[(start - 25): (end - 25),], aes_string(x='date', y="Hrvatska_avg7*100000/3888529"), colour='blue', size=1.5, alpha=0.7)
+#   geom_line(data=avg7_df[(start - 25): (end - 25),], aes_string(x='date', y="Hrvatska_avg7*100000/3871833"), colour='blue', size=1.5, alpha=0.7)
 # g
