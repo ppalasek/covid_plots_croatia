@@ -19,6 +19,7 @@ library(dplyr)
 library(tidyr)
 
 library(reshape2)
+library(gridExtra)
 
 
 library("scales")                                   
@@ -350,3 +351,43 @@ for (r in colnames(data_to_plot)) {
 }
 
 sink()
+
+
+sink("table.csv")
+
+cat(paste("Dobna skupina, Na 100k stanovnika u 7 dana do ", last_date, ", 1 na svakih, Promjena u odnosu na prošli tjedan\n", sep=''))
+
+for (r in colnames(data_to_plot)) {
+  curr <- data_to_plot[nrow(data_to_plot), r]
+  prev <- data_to_plot[nrow(data_to_plot) - 7, r]
+  
+  if (r != 'Datum') {
+    curr_1_na <- 100000 / curr 
+    
+    cat(sprintf("%s, %2.0f, %2.0f, %+2.0f%%\n", r, curr, curr_1_na, (((curr - prev) / prev) * 100)))
+  }
+}
+
+sink()
+
+
+library(grid)
+
+
+table_data <- read.csv(file = 'table.csv')
+
+colnames(table_data) <- c("Dobna skupina",
+                          paste("Na 100k stanovnika\nu 7 dana do ", last_date, sep=''),
+                          "1 na svakih",
+                          " Promjena u odnosu\nna prošli tjedan")
+
+tt <- ttheme_default(colhead=list(fg_params = list(parse=TRUE)))
+
+
+
+grid.newpage()
+
+png(paste('img/', last_date_, '_table.png', sep = ''), width=600, height=550, res=100)
+grid.table(table_data, theme=tt, rows = NULL)
+
+dev.off()
