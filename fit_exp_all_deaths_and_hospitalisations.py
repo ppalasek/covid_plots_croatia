@@ -124,7 +124,7 @@ print(n_to_plot - diff_dates.days)
 for i in range(n_to_plot - diff_dates.days):
     patients_14_d = sum(hosp_patients[i : i + n_days])
 
-    patients_14_d = patients_14_d / 3888529 * 1000000
+    patients_14_d = patients_14_d / 3871833 * 1000000
 
     curr_date = datetime.datetime.strptime(dates[i], "%d/%m/%Y").date()
 
