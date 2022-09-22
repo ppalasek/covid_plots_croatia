@@ -68,6 +68,10 @@ merged_data <- transform(merged_data, cum_deaths_1k_colour = ifelse(cum_deaths_1
 print(merged_data$cum_deaths[nrow(merged_data)])
 total_deaths <- merged_data$cum_deaths[nrow(merged_data)]
 
+total_deaths_24h <- merged_data$cum_deaths[nrow(merged_data)] - merged_data$cum_deaths[(nrow(merged_data) - 1)]
+total_deaths_7d <- merged_data$cum_deaths[nrow(merged_data)] - merged_data$cum_deaths[(nrow(merged_data) - 7)]
+total_deaths_30d <- merged_data$cum_deaths[nrow(merged_data)] - merged_data$cum_deaths[(nrow(merged_data) - 30)]
+
 last_count <- total_deaths %% 1000
 
 print(last_count)
@@ -113,3 +117,29 @@ g3
 ggsave(paste('img/', last_date_, '_deaths_shaded.png', sep = ''),
        plot = g3, dpi=300, width=1600*4, height=700*4, units="px",
        bg = "white")
+
+g4 <- g3 + scale_y_continuous(trans='pseudo_log', breaks=c(0, 1, 2, 4, 8, 16, 32, 64, 128)) +
+	ggtitle(paste('COVID-19: Kretanje broja umrlih u Hrvatskoj (7d prosjek, log. skala). Svaki prikazani segment ispod krivulje predstavlja 1000 osoba (ukupno: ', total_deaths,').', sep=''))
+
+
+
+ggsave(paste('img/', last_date_, '_deaths_shaded_log.png', sep = ''),
+       plot = g4, dpi=300, width=1600*4, height=700*4, units="px",
+       bg = "white")
+
+print(total_deaths_24h)
+print(total_deaths_7d)
+print(total_deaths_30d)
+print(total_deaths)
+print('aa')
+
+# print(merged_data$cum_deaths)i
+
+deaths_24h=c(total_deaths_24h)
+deaths_7d=c(total_deaths_7d)
+deaths_30d=c(total_deaths_30d)
+deaths_total=c(total_deaths)
+
+df <- data.frame(deaths_24h, deaths_7d, deaths_30d, deaths_total)
+
+write_json(df, "deaths_summary.json")
