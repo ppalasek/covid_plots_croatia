@@ -51,6 +51,9 @@ cd ..
 python publish_tweet.py 'img/age_group_lines_stacked.png' 'Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj (linearna/logaritamska skala).'
 
 
+# /home/temp/code/covid_plots_croatia/img/2022_09_19_table.png
+python publish_tweet.py 'img/{}_table.png' 'Tablični prikaz promjene broja COVID-19 slučajeva po dobnim skupinama u Hrvatskoj.'
+
 echo "generate cases hosp deaths log"
 Rscript generate_cases_hosp_deaths_log.r
 
