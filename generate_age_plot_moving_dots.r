@@ -174,7 +174,8 @@ for (j in seq(0, difftime((Sys.Date() - 3), start_date, units = c("days")))) { #
     labs(title = 'Kretanje broja COVID-19 slučajeva na 100 tisuća stanovnika po dobnim skupinama u Hrvatskoj',
          subtitle=paste(format(as.Date(current_date), "%d.%m.%Y."), 'Crna točka: broj slučajeva u 7 dana do prikazanog datuma, sive točke: sedmodnevni broj slučajeva za 6 dana ranije.'),
          caption = 'Izvori podataka: koronavirus.hr (broj slučajeva), dzs.hr (broj stanovnika po dobnim skupinama, podaci iz 2021.). Autor: Petar Palašek. Inspirirano animacijom: @ProfColinDavis') +
-    theme_minimal()
+    theme_minimal() +
+    coord_flip()
   p
   
   ggsave(paste('img/anim_dots/anim_', str_pad(j, 6, pad = "0"), sep = '', '.png'),
