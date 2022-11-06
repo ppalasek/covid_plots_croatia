@@ -38,13 +38,15 @@ printer = MyListener(bearer_token)
 
 
 
-# print(printer.get_rules())
+#print(printer.get_rules())
+
+# printer.delete_rules(1565653951038496768)
 # printer.delete_rules(1552562663024214017)
 # printer.delete_rules(1560160651464609793)
 # printer.delete_rules(1560295800479137797)
 
 
-printer.add_rules(tweepy.StreamRule('("slučaj" OR "slučaja" OR "slučajeva" OR "ukupno testirano" OR "preminulo") from:koronavirus_hr'))
+printer.add_rules(tweepy.StreamRule('("slučaj" OR "slučaja" OR "slučajeva" OR "ukupno" OR "preminulo") from:koronavirus_hr'))
 
 print(printer.get_rules())
 
@@ -84,7 +86,7 @@ print('Waiting for num tested and num positive...')
 found = False
 
 while not found:
-    query = '("slučajeva" OR "slučaj" OR "slučaja" OR "ukupno testirano") from:koronavirus_hr'
+    query = '("slučajeva" OR "slučaj" OR "slučaja" OR "ukupno" OR "preminulo") from:koronavirus_hr'
 
     tweets = client.search_recent_tweets(query=query, tweet_fields=['created_at'], max_results=10)
 
@@ -118,7 +120,7 @@ while not found:
         print('"{}"'.format(tweet.text))
         print('-' * 50)
 
-        m = re.search("testirano.*od toga (\d+[\.\,]*\d*[^\d]+)u posljednja", tweet.text)
+        m = re.search("testiran.*od toga (\d+[\.\,]*\d*[^\d]+)u posljednja", tweet.text)
 
         if m:
             testirano_24h = m.groups()[0].replace('.', '').replace(',', '')
@@ -247,6 +249,23 @@ print("MEDIA: ", media)
 
 tweet = api.update_status(status=text, media_ids= [media.media_id_string])
 print("TWEET: ", tweet)
+
+
+
+
+text = 'Sedmodnevni prosjek broja učinjenih testova u Hrvatskoj {}, {} u posljednjih 24h.'.format(round(total_tested_7 / 7), num_tested[-1][1])
+
+num_tests_img_path = 'img/{}_num_tests.png'.format(last_date_)
+
+print(num_tests_img_path)
+
+
+media = api.media_upload(filename=num_tests_img_path)
+print("MEDIA: ", media)
+
+tweet = api.update_status(status=text, media_ids= [media.media_id_string])
+print("TWEET: ", tweet)
+
 
 
 
